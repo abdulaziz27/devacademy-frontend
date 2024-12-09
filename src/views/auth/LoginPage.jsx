@@ -14,7 +14,7 @@ function LoginPage() {
     }, []);
 
     return (
-        <div className="flex h-screen bg-gray-100" style={{ fontFamily: 'Poppins, sans-serif' }}>
+        <div className="flex h-screen bg-gray-100 select-none" style={{ fontFamily: 'Poppins, sans-serif' }}>
             <div
                 className="hidden md:flex w-3/6 bg-gradient-to-br from-blue-700 to-blue-400 p-12 items-center justify-center relative overflow-hidden">
 
