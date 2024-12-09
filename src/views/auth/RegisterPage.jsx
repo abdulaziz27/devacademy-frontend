@@ -21,19 +21,45 @@ const RegisterPage = () => {
     });
 
     const [errors, setErrors] = useState({});
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
-        ...formData,
-        [name]: value,
+            ...formData,
+            [name]: value,
         });
     };
 
-    const handleSubmit = (e) => {
+    const validate = () => {
+        const newErrors = {};
+        if (formData.password.length < 8) {
+            newErrors.password = 'Password must be at least 8 characters long';
+        }
+        if (formData.password !== formData.passwordConfirmation) {
+            newErrors.passwordConfirmation = 'Passwords do not match';
+        }
+    return newErrors;
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Handle form submission logic here, e.g., API call
-        console.log(formData);
+
+        const validationErrors = validate();
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);
+            return;
+        }
+    
+        setIsSubmitting(true);
+    
+        try {
+            await axios.post('/register', formData);
+        } catch (error) {
+            setErrors(error.response.data.errors);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -44,9 +70,9 @@ const RegisterPage = () => {
         >
             <div className="relative z-10 bg-white bg-opacity-20 backdrop-filter backdrop-blur-sm rounded p-12 lg:px-12 lg:py-24">
             <div className="text-white max-w-lg">
-                <h1 className="text-4xl lg:text-6xl font-bold mb-8">Digital platform for developer careers.</h1>
+                <h1 className="text-4xl lg:text-5xl font-bold mb-8">DevAcademy:<br />Learn Programming and Build Your Future</h1>
                 <p className="text-sm lg:text-lg w-3/4">
-                Improve your tech skills and career prospects with our AI-powered platform
+                Master programming skills and advance your career with our AI-powered platform designed for aspiring developers.
                 </p>
             </div>
             </div>
@@ -87,7 +113,7 @@ const RegisterPage = () => {
                     type="text"
                     value={formData.name}
                     onChange={handleChange}
-                    className="block mt-1 w-full p-2 border rounded"
+                    className="block mt-1 w-full p-2 border rounded bg-white text-black hover:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-all duration"
                     placeholder="Name"
                     required
                 />
@@ -102,7 +128,7 @@ const RegisterPage = () => {
                     type="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className="block mt-1 w-full p-2 border rounded"
+                    className="block mt-1 w-full p-2 border rounded bg-white text-black hover:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-all duration"
                     placeholder="Email"
                     required
                 />
@@ -117,7 +143,7 @@ const RegisterPage = () => {
                     type="password"
                     value={formData.password}
                     onChange={handleChange}
-                    className="block mt-1 w-full p-2 border rounded"
+                    className="block mt-1 w-full p-2 border rounded bg-white text-black hover:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-all duration"
                     placeholder="Password"
                     required
                 />
@@ -125,14 +151,14 @@ const RegisterPage = () => {
                 </div>
 
                 {/* Confirm Password */}
-                <div className="mb-4">
+                <div className="mb-9">
                 <input
                     id="passwordConfirmation"
                     name="passwordConfirmation"
                     type="password"
                     value={formData.passwordConfirmation}
                     onChange={handleChange}
-                    className="block mt-1 w-full p-2 border rounded"
+                    className="block mt-1 w-full p-2 border rounded bg-white text-black hover:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-all duration"
                     placeholder="Confirm Password"
                     required
                 />
@@ -140,21 +166,24 @@ const RegisterPage = () => {
                     <p className="text-red-500 text-sm mt-2">{errors.passwordConfirmation}</p>
                 )}
                 </div>
-
-                <div className="flex items-center justify-between mb-4">
-                <Link to="/login" className="text-sm text-blue-600 hover:underline">
-                    Already registered?
-                </Link>
+                <div className="mb-5">
+                    <button
+                        type="submit"
+                        className="w-full justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300"
+                    >
+                        Register
+                    </button>
                 </div>
-
-                <div className="mb-4">
-                <button
-                    type="submit"
-                    className="w-full justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                >
-                    Register
-                </button>
-                </div>
+                <div className="flex items-center justify-center my-2">
+                        <div className="px-3 font-light text-sm text-gray-400">
+                            Have an account?
+                            <Link
+                                to="/login"
+                                className="ml-2 relative text-blue-500 before:absolute before:-bottom-1 before:left-0 before:h-[2px] before:w-0 before:bg-blue-500 before:transition-all before:duration-300 hover:before:w-full">
+                                    Log In
+                            </Link>
+                        </div>
+                    </div>
             </form>
             </div>
         </div>

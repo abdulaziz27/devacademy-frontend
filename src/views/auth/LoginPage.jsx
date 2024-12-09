@@ -21,10 +21,10 @@ function LoginPage() {
                 <div
                     className="relative z-10 bg-white bg-opacity-20 backdrop-filter backdrop-blur-sm rounded p-12 lg:px-12 lg:py-24">
                     <div className="text-white max-w-lg">
-                        <h1 className="text-4xl lg:text-6xl font-bold mb-8">Digital platform for developer careers.</h1>
-                        <p className="text-sm lg:text-lg w-3/4">Improve your tech skills and career prospects with our
-                            AI-powered platform
-                        </p>
+                    <h1 className="text-4xl lg:text-5xl font-bold mb-8">DevAcademy:<br />Learn Programming and Build Your Future</h1>
+                    <p className="text-sm lg:text-lg w-3/4">
+                    Master programming skills and advance your career with our AI-powered platform designed for aspiring developers.
+                    </p>
                     </div>
                 </div>
             </div>
