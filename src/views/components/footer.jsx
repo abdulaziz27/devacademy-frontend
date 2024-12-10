@@ -5,9 +5,9 @@ const Footer = () => {
         <footer className="bg-white border-t border-slate-200">
             <div className="mx-auto w-full max-w-[1200px]">
                 <div className="p-4 py-6 lg:py-8">
-                    <div className="md:flex justify-between gap-12">
+                    <div className="md:flex justify-between gap-12 mt-4 mb-14">
                         {/* Logo and Description */}
-                        <div className="mb-6 md:mb-0">
+                        <div className="md:mb-0">
                         <a
                             href="/"
                             className="text-2xl font-bold mr-4"
@@ -16,7 +16,7 @@ const Footer = () => {
                                 DevAcademy
                             </span>
                         </a>
-                        <p className="mt-2 text-sm text-gray-600 max-w-md">
+                        <p className="mt-5 text-sm text-gray-600 max-w-md">
                             Jl. Kyai Moch. Syafei Gg 1 No.2450, RT.04/RW.08, Kebondalem,
                             Purwokerto Lor, Kec. Purwokerto Tim., Kabupaten Banyumas, Jawa
                             Tengah 53114
@@ -80,58 +80,61 @@ const Footer = () => {
                         {/* Quick Links */}
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-12">
                             <div>
-                                <h2 class="mb-6 text-sm font-semibold text-gray-900 uppercase">Company</h2>
-                                <ul class="text-gray-600">
-                                    <li class="mb-4">
-                                        <a href="{{ url('/about-us') }}"
-                                            class="text-sm hover:text-blue-500 transition duration-300 ease-in-out">About
-                                            Us</a>
+                                <h2 class="mt-1 mb-4 text-sm font-semibold text-gray-900 uppercase">Company</h2>
+                                <ul class="text-gray-500">
+                                    <li class="mb-2">
+                                        <a href="/about-us"
+                                            target="_blank"
+                                            class="text-sm font-normal hover:text-blue-500 transition duration-300 ease-in-out">About Us</a>
                                     </li>
-                                    <li class="mb-4">
-                                        <a href="{{ url('https://api.whatsapp.com/') }}" target="_blank"
-                                            class="text-sm hover:text-blue-500 transition duration-300 ease-in-out">Contact</a>
+                                    <li class="mb-2">
+                                        <a href="https://api.whatsapp.com/" target="_blank"
+                                            class="text-sm font-normal hover:text-blue-500 transition duration-300 ease-in-out">Contact</a>
                                     </li>
                                     <li>
-                                        <a href="{{ url('/course') }}"
-                                            class="text-sm hover:text-blue-500 transition duration-300 ease-in-out">Our
-                                            Course</a>
+                                        <a href="/course"
+                                            target="_blank"
+                                            class="text-sm font-normal hover:text-blue-500 transition duration-300 ease-in-out">Our Course</a>
                                     </li>
                                 </ul>
                             </div>
                             <div>
-                                <h2 class="mb-6 text-sm font-semibold text-gray-900 uppercase">Information</h2>
-                                <ul class="text-gray-600">
-                                    <li class="mb-4">
-                                        <a href="{{ url('/blog') }}" target="_blank"
-                                            class="text-sm hover:text-blue-500 transition duration-300 ease-in-out">Blog</a>
+                                <h2 class="mt-1 mb-4 text-sm font-semibold text-gray-900 uppercase">Information</h2>
+                                <ul class="text-gray-500">
+                                    <li class="mb-2">
+                                        <a href="/blog"
+                                            target="_blank"
+                                            class="text-sm font-normal hover:text-blue-500 transition duration-300 ease-in-out">Blog</a>
                                     </li>
-                                    <li class="mb-4">
-                                        <a href="{{ url('/program') }}" target="_blank"
-                                            class="text-sm hover:text-blue-500 transition duration-300 ease-in-out">Program</a>
+                                    <li class="mb-2">
+                                        <a href="/program"
+                                            target="_blank"
+                                            class="text-sm font-normal hover:text-blue-500 transition duration-300 ease-in-out">Program</a>
                                     </li>
                                     <li class="">
-                                        <a href="{{ url('/faq') }}" target="_blank"
-                                            class="text-sm hover:text-blue-500 transition duration-300 ease-in-out">FAQ</a>
+                                        <a href="/faq"
+                                            target="_blank"
+                                            class="text-sm font-normal hover:text-blue-500 transition duration-300 ease-in-out">FAQ</a>
                                     </li>
                                 </ul>
                             </div>
                             <div>
-                                <h2 class="mb-6 text-sm font-semibold text-gray-900 uppercase">Teaching</h2>
-                                <ul class="text-gray-600">
-                                    <li class="mb-4">
-                                        <a href="{{ url('/become-teacher') }}" target="_blank"
-                                            class="text-sm hover:text-blue-500 transition duration-300 ease-in-out">Become a
-                                            Teacher</a>
+                                <h2 class="mt-1 mb-4 text-base font-semibold text-gray-900 uppercase">Teaching</h2>
+                                <ul class="text-gray-500">
+                                    <li class="mb-2">
+                                        <a href="/become-teacher"
+                                            target="_blank"
+                                            class="text-sm font-normal hover:text-blue-500 transition duration-300 ease-in-out">Become a Teacher</a>
                                     </li>
-                                    <li class="mb-4">
-                                        <a href="{{ url('/rules-requirements') }}" target="_blank"
-                                            class="text-sm hover:text-blue-500 transition duration-300 ease-in-out">Rules &
-                                            Requirements</a>
+                                    <li class="mb-2">
+                                        <a href="/rules-requirements"
+                                            target="_blank"
+                                            class="text-sm font-normal hover:text-blue-500 transition duration-300 ease-in-out">Rules & Requirements</a>
                                     </li>
                                     <li class="">
-                                        <a href="{{ url('/help-center') }}" target="_blank"
-                                            class="text-sm hover:text-blue-500 transition duration-300 ease-in-out">Help
-                                            Center</a>
+                                        <a href="/help-center"
+                                            target="_blank"
+                                            class="text-sm font-normal hover:text-blue-500 transition duration-300 ease-in-out">Help Center</a>
                                     </li>
                                 </ul>
                             </div>
@@ -142,13 +145,13 @@ const Footer = () => {
 
                     {/* Bottom Section */}
                     <div class="flex flex-col md:flex-row items-center justify-center md:justify-between">
-                        <span class="font-normal text-sm text-gray-500 text-center">© 2024 <a href="{{ url('/') }}"
-                                class="hover:underline">DevCareer AI™</a>. All Rights Reserved.</span>
+                        <span class="font-normal text-sm text-gray-500 text-center">© 2024 <a href="/"
+                                class="hover:underline text-blue-500 hover:text-blue-600">DevAcademy™</a>. All Rights Reserved.</span>
                         <div class="flex items-center">
-                            <a href="{{ url('/terms') }}" target="_blank"
+                            <a href="/terms" target="_blank"
                                 class="text-sm text-gray-500 text-center hover:underline">Terms</a>
                             <span class="mx-2 text-gray-500 text-center">•</span>
-                            <a href="{{ url('/privacy') }}" target="_blank"
+                            <a href="/privacy" target="_blank"
                                 class="text-sm text-gray-500 text-center hover:underline">Privacy</a>
                         </div>
                     </div>
