@@ -1,15 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import swal from 'sweetalert'; // Add sweetalert for displaying messages
+import swal from 'sweetalert';
 import { logoutUser } from '../../api'; // Import logoutUser function
 import SearchBar from './search_bar';
+import userprofile from '../../assets/images/user-profile.png'; // Import user profile image
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [isOpen, setIsOpen] = useState(false); // State for the sidebar
+  const [isScrolled, setIsScrolled] = useState(false); // State for scroll effect
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login status
-  const [user, setUser] = useState(null); // Store user data (optional for displaying user info)
-  const navigate = useNavigate();
+  const [user, setUser] = useState(null); // Store user data for profile display
+  const [dropdownOpen, setDropdownOpen] = useState(false); // State to handle dropdown visibility
+  const dropdownRef = useRef(null); // Reference to dropdown
+  const profileRef = useRef(null); // Reference to profile image
+  const navigate = useNavigate(); // For navigation
 
   useEffect(() => {
     // Check if the user is logged in by verifying the token
@@ -18,7 +22,7 @@ const Navbar = () => {
       setIsLoggedIn(true);
       // Optionally, you can fetch user details here (for example from an API endpoint)
       // For now, let's assume the user object is available from the token or another source
-      const userInfo = { name: 'User Name' }; // Example, replace with real user data
+      const userInfo = { name: 'User Name', avatar: userprofile }; // Example
       setUser(userInfo);
     } else {
       setIsLoggedIn(false);
@@ -34,6 +38,22 @@ const Navbar = () => {
     };
   }, []);
 
+  useEffect(() => {
+    // Close dropdown if click is outside of the dropdown or profile image
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target) && !profileRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    // Clean up the event listener on component unmount
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   const handleLogout = async () => {
     try {
       // Call logoutUser API
@@ -42,7 +62,7 @@ const Navbar = () => {
         swal("Success!", result.message, "success").then(() => {
           setIsLoggedIn(false);
           setUser(null); // Clear user data
-          navigate('/'); // Redirect to login page after logout
+          navigate('/login'); // Redirect to login page after logout
         });
       } else {
         swal("Error!", "Logout failed, please try again.", "error");
@@ -51,6 +71,10 @@ const Navbar = () => {
       swal("Error!", "An error occurred during logout.", "error");
       console.error("Logout error:", error);
     }
+  };
+
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
   };
 
   return (
@@ -141,19 +165,46 @@ const Navbar = () => {
             </a>
           </div>
 
-          {/* Search and Login Buttons */}
+          {/* Search and Profile Button */}
           <div className="flex items-center gap-4 ml-auto">
-            {/* Auth Buttons */}
+            {/* If logged in, show profile picture and dropdown */}
             {isLoggedIn ? (
-              // If logged in, show user name and logout button
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
                 <span className="text-lg font-semibold text-gray-600">Hello, {user?.name}</span>
-                <button
-                  onClick={handleLogout}
-                  className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
-                >
-                  Log Out
-                </button>
+
+                {/* Profile Image with Dropdown */}
+                <img
+                  ref={profileRef} // Reference to profile image
+                  src={userprofile} // Use the imported user profile image
+                  alt="Profile"
+                  className="w-8 h-8 rounded-full cursor-pointer"
+                  onClick={toggleDropdown}
+                />
+                {dropdownOpen && (
+                  <div
+                    ref={dropdownRef} // Reference to dropdown
+                    className="absolute top-20 mt-2 w-48 bg-white shadow-lg rounded-md border border-gray-200 z-50"
+                  >
+                    <ul className="py-2">
+                      <li>
+                        <Link
+                          to="/profile"
+                          className="block px-4 py-2 text-gray-800 hover:bg-gray-200"
+                        >
+                          Your Profile
+                        </Link>
+                      </li>
+                      <li>
+                        <button
+                          onClick={handleLogout}
+                          className="block w-full px-4 py-2 text-gray-800 hover:bg-gray-200 text-left"
+                        >
+                          Logout
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                )}
               </div>
             ) : (
               // If not logged in, show login and signup buttons
