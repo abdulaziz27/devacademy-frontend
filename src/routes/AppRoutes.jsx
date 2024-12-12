@@ -9,6 +9,7 @@ import MenuDashboard from '../views/MenuDashboard';
 import Dashboard from '../views/layouts/dashbord';
 import ProfilePage from '../views/layouts/Profile';
 import Settings from '../views/layouts/Settings';
+import UserCourses from '../views/layouts/UserCourses';
 
 function AppRoutes() {
     return (
@@ -23,6 +24,7 @@ function AppRoutes() {
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="profile" element={<ProfilePage />} />
                 <Route path="settings" element={<Settings />} />
+                <Route path="user-courses" element={<UserCourses />} />
             </Route>
         </Routes>
     );

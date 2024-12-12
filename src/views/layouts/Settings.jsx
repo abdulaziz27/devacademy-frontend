@@ -50,22 +50,22 @@ const Settings = () => {
                 <div className="w-full lg:w-5/6 min-h-screen">
                     <div className="space-y-6">
                         <h2 className="text-2xl font-semibold text-gray-800">
-                            Profile
+                            Settings
                         </h2>
 
                         <div className="bg-white p-4 sm:p-8 rounded-lg shadow">
                             <div className="max-w-xl">
                                 <section>
                                     <header>
-                                        <h2 className="text-lg font-medium text-gray-900">Update Password</h2>
-                                        <p className="mt-1 text-sm text-gray-600">
+                                        <h2 className="text-xl font-medium text-gray-900">Update Password</h2>
+                                        <p className="mt-2 text-base text-gray-600">
                                             Ensure your account is using a long, random password to stay secure.
                                         </p>
                                     </header>
 
                                     <form onSubmit={handleSubmit} className="mt-6 space-y-6">
                                         <div>
-                                            <label htmlFor="update_password_current_password" className="block text-sm font-medium text-gray-700">
+                                            <label htmlFor="update_password_current_password" className="block text-base font-medium text-gray-700">
                                                 Current Password
                                             </label>
                                             <input
@@ -83,7 +83,7 @@ const Settings = () => {
                                         </div>
 
                                         <div>
-                                            <label htmlFor="update_password_password" className="block text-sm font-medium text-gray-700">
+                                            <label htmlFor="update_password_password" className="block text-base font-medium text-gray-700">
                                                 New Password
                                             </label>
                                             <input
@@ -101,7 +101,7 @@ const Settings = () => {
                                         </div>
 
                                         <div>
-                                            <label htmlFor="update_password_password_confirmation" className="block text-sm font-medium text-gray-700">
+                                            <label htmlFor="update_password_password_confirmation" className="block text-base font-medium text-gray-700">
                                                 Confirm Password
                                             </label>
                                             <input
