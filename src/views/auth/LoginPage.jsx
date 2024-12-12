@@ -94,7 +94,7 @@ function LoginPage() {
               <input
                 id="email"
                 type="email"
-                className="block mt-1 w-full p-2 border rounded bg-white text-black hover:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-all duration"
+                className="block mt-1 w-full p-2 border rounded bg-white text-black hover:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-all duration duration-300"
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)} // Update email state
@@ -109,7 +109,7 @@ function LoginPage() {
               <input
                 id="password"
                 type={visible ? 'text' : 'password'}
-                className="block mt-1 w-full p-2 border rounded bg-white text-black hover:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-all duration"
+                className="block mt-1 w-full p-2 border rounded bg-white text-black hover:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-all duration-300"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)} // Update password state

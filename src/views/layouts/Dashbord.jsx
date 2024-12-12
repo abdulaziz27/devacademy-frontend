@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import Sidebar from '../components/sideBar';
 import Navbar from '../components/Navbar';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import '../../app.css';
+import Sidebar from '../components/SideBarDashboard';
 
 const Dashboard = ({ teacherCount, studentCount, courseCount, subscription, courses=[], activities=[], totalStudents }) => {
     // Hardcoded role (use 'owner', 'teacher', or 'student')
@@ -25,8 +25,6 @@ const Dashboard = ({ teacherCount, studentCount, courseCount, subscription, cour
     }, []);
 
     return (
-        <div className="antialiased bg-gray-100" style={{ fontFamily: 'Poppins, sans-serif' }}>
-            <Navbar />
             <div className="flex">
                 <div className="w-[1200px] relative flex items-start mx-auto p-4 py-6 lg:py-8 gap-8">
                     <Sidebar />
@@ -240,7 +238,6 @@ const Dashboard = ({ teacherCount, studentCount, courseCount, subscription, cour
                     </div>
                 </div>
             </div>
-        </div>
     );
 };
 

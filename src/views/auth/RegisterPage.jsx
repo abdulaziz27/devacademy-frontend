@@ -127,7 +127,7 @@ const RegisterPage = () => {
                                 type="text"
                                 value={formData.name}
                                 onChange={handleChange}
-                                className="block mt-1 w-full p-2 border rounded bg-white text-black hover:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-all duration"
+                                className="block mt-1 w-full p-2 border rounded bg-white text-black hover:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-all duration-300"
                                 placeholder="Name"
                                 required
                             />
@@ -142,7 +142,7 @@ const RegisterPage = () => {
                                 type="email"
                                 value={formData.email}
                                 onChange={handleChange}
-                                className="block mt-1 w-full p-2 border rounded bg-white text-black hover:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-all duration"
+                                className="block mt-1 w-full p-2 border rounded bg-white text-black hover:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-all duration-300"
                                 placeholder="Email"
                                 required
                             />
@@ -157,7 +157,7 @@ const RegisterPage = () => {
                                 type="password"
                                 value={formData.password}
                                 onChange={handleChange}
-                                className="block mt-1 w-full p-2 border rounded bg-white text-black hover:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-all duration"
+                                className="block mt-1 w-full p-2 border rounded bg-white text-black hover:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-all duration-300"
                                 placeholder="Password"
                                 required
                             />
@@ -172,7 +172,7 @@ const RegisterPage = () => {
                                 type="password"
                                 value={formData.passwordConfirmation}
                                 onChange={handleChange}
-                                className="block mt-1 w-full p-2 border rounded bg-white text-black hover:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-all duration"
+                                className="block mt-1 w-full p-2 border rounded bg-white text-black hover:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-all duration-300"
                                 placeholder="Confirm Password"
                                 required
                             />
