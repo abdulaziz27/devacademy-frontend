@@ -3,11 +3,12 @@ import { Routes, Route } from 'react-router-dom';
 import LoginPage from '../views/auth/LoginPage';
 import RegisterPage from '../views/auth/RegisterPage';
 import HomePage from '../views/HomePage';
-import SubscriptionPage from '../views/layouts/subscription';
-import CoursesPage from '../views/layouts/courses';
+import SubscriptionPage from '../views/layouts/Subscription';
+import CoursesPage from '../views/layouts/Courses';
 import MenuDashboard from '../views/MenuDashboard';
 import Dashboard from '../views/layouts/dashbord';
 import ProfilePage from '../views/layouts/Profile';
+import Settings from '../views/layouts/Settings';
 
 function AppRoutes() {
     return (
@@ -21,6 +22,7 @@ function AppRoutes() {
                 {/* Nested routes under MenuDashboard */}
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="profile" element={<ProfilePage />} />
+                <Route path="settings" element={<Settings />} />
             </Route>
         </Routes>
     );

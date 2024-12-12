@@ -8,10 +8,10 @@ const Sidebar = () => {
         { name: 'Dashboard', path: '/dashboard', roles: ['owner', 'teacher'] },
         { name: 'Teachers', path: '/admin/teachers', roles: ['owner'] },
         { name: 'Categories', path: '/admin/categories', roles: ['owner'] },
-        { name: 'Courses', path: '/admin/courses', roles: ['owner', 'teacher'] },
-        { name: 'Transactions', path: '/admin/subscribe_transactions', roles: ['owner'] },
+        { name: 'Courses', path: '/courses', roles: ['owner', 'teacher'] },
+        { name: 'Transactions', path: '/subscribe_transactions', roles: ['owner'] },
         { name: 'Profile', path: '/profile', roles: ['owner', 'teacher'] },
-        { name: 'Settings', path: '/settings/edit', roles: ['owner', 'teacher'] },
+        { name: 'Settings', path: '/settings', roles: ['owner', 'teacher'] },
     ];
 
     const userRole = 'teacher'; // Example: Replace with logic to fetch the user's role.
