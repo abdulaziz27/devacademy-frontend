@@ -1,29 +1,35 @@
+import SearchBar from './SearchBar';
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import swal from 'sweetalert';
-import { logoutUser } from '../../api'; // Import logoutUser function
-import SearchBar from './SearchBar';
-import userprofile from '../../assets/images/user-profile.png'; // Import user profile image
+import { logoutUser, getUserProfile } from '../../api'; // Import necessary API functions
+import userprofile from '../../assets/images/user-profile.png'; // Default profile image
+import isAuthenticated from '../../auth'; // Import isAuthenticated function
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false); // State for the sidebar
   const [isScrolled, setIsScrolled] = useState(false); // State for scroll effect
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login status
-  const [user, setUser] = useState(null); // Store user data for profile display
+  const [name, setName] = useState(null); // User name state
+  const [avatar, setAvatar] = useState(userprofile); // Default avatar state
   const [dropdownOpen, setDropdownOpen] = useState(false); // State to handle dropdown visibility
   const dropdownRef = useRef(null); // Reference to dropdown
   const profileRef = useRef(null); // Reference to profile image
   const navigate = useNavigate(); // For navigation
 
   useEffect(() => {
-    // Check if the user is logged in by verifying the token
-    const token = localStorage.getItem('accessToken');
-    if (token) {
+    // Check if the user is logged in using the isAuthenticated function
+    if (isAuthenticated()) {
       setIsLoggedIn(true);
-      // Optionally, you can fetch user details here (for example from an API endpoint)
-      // For now, let's assume the user object is available from the token or another source
-      const userInfo = { name: 'User Name', avatar: userprofile }; // Example
-      setUser(userInfo);
+      getUserProfile()
+        .then((profile) => {
+          setName(profile.data.name); // Set user name
+          setAvatar(profile.data.avatar || userprofile); // Set user avatar or default
+        })
+        .catch((error) => {
+          console.error('Error fetching user profile:', error);
+          setIsLoggedIn(false);
+        });
     } else {
       setIsLoggedIn(false);
     }
@@ -57,19 +63,16 @@ const Navbar = () => {
   const handleLogout = async () => {
     try {
       // Call logoutUser API
-      const result = await logoutUser();
-      if (result.status === "Success") {
-        swal("Success!", result.message, "success").then(() => {
-          setIsLoggedIn(false);
-          setUser(null); // Clear user data
-          navigate('/login'); // Redirect to login page after logout
-        });
-      } else {
-        swal("Error!", "Logout failed, please try again.", "error");
-      }
+      await logoutUser();
+      swal('Success!', 'You have been logged out.', 'success').then(() => {
+        setIsLoggedIn(false);
+        setName(null); // Clear name
+        setAvatar(userprofile); // Reset avatar to default
+        navigate('/login'); // Redirect to login page after logout
+      });
     } catch (error) {
-      swal("Error!", "An error occurred during logout.", "error");
-      console.error("Logout error:", error);
+      swal('Error!', 'An error occurred during logout.', 'error');
+      console.error('Logout error:', error);
     }
   };
 
@@ -80,9 +83,7 @@ const Navbar = () => {
   return (
     <div
       id="navbar"
-      className={`sticky top-0 z-40 w-full backdrop-blur flex-none transition-colors duration-500 lg:z-50 bg-white supports-backdrop-blur:bg-white/60 ${
-        isScrolled ? 'border-b border-slate-200 shadow-md' : ''
-      }`}
+      className={`sticky top-0 z-40 w-full backdrop-blur flex-none transition-colors duration-500 lg:z-50 bg-white supports-backdrop-blur:bg-white/60 ${isScrolled ? 'border-b border-slate-200 shadow-md' : ''}`}
     >
       <div className="flex items-center h-[70px]">
         <div className="w-[1200px] relative flex items-center mx-auto p-4 py-6 lg:py-8">
@@ -106,32 +107,6 @@ const Navbar = () => {
                     />
                   </svg>
                 </button>
-
-                {/* Backdrop */}
-                {isOpen && (
-                  <div
-                    onClick={() => setIsOpen(false)}
-                    className="fixed h-screen inset-0 bg-gray-500 bg-opacity-75 transition-opacity z-40 lg:hidden"
-                  ></div>
-                )}
-
-                {/* Sidebar */}
-                {isOpen && (
-                  <div className="fixed top-0 left-0 h-screen w-2/4 max-w-[212px] bg-white shadow-lg z-50 md:hidden">
-                    <div className="py-6 px-4">
-                      <a href="/" className="text-2xl font-bold mr-4">
-                        DevAcademy
-                      </a>
-                      <div className="border-t border-slate-300 my-4"></div>
-                      <div className="pt-1">
-                        <SearchBar />
-                      </div>
-                      <a href="/courses" className="text-slate-900 block pt-4 px-4">
-                        Course
-                      </a>
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
 
@@ -162,13 +137,13 @@ const Navbar = () => {
             {isLoggedIn ? (
               <div className="flex items-center gap-2">
                 <span className="text-lg font-semibold text-gray-600">
-                  {user?.name}
+                  {name} {/* Display user name */}
                 </span>
 
                 {/* Profile Image with Dropdown */}
                 <img
                   ref={profileRef} // Reference to profile image
-                  src={userprofile} // Use the imported user profile image
+                  src={avatar} // Use the avatar from API or default
                   alt="Profile"
                   className="w-8 h-8 rounded-full cursor-pointer"
                   onClick={toggleDropdown}
