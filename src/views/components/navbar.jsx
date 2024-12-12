@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import swal from 'sweetalert';
 import { logoutUser } from '../../api'; // Import logoutUser function
-import SearchBar from './search_bar';
+import SearchBar from './SearchBar';
 import userprofile from '../../assets/images/user-profile.png'; // Import user profile image
 
 const Navbar = () => {
@@ -124,13 +124,10 @@ const Navbar = () => {
                       </a>
                       <div className="border-t border-slate-300 my-4"></div>
                       <div className="pt-1">
-                        <x-search-bar />
+                        <SearchBar />
                       </div>
                       <a href="/courses" className="text-slate-900 block pt-4 px-4">
                         Course
-                      </a>
-                      <a href="/resume" className="text-slate-900 block pt-4 px-4">
-                        Resume
                       </a>
                     </div>
                   </div>
@@ -157,12 +154,6 @@ const Navbar = () => {
             >
               Course
             </Link>
-            <a
-              href="/resume"
-              className="flex text-lg font-semibold text-gray-600 hover:text-blue-500 transition duration-300 ease-in-out"
-            >
-              Resume
-            </a>
           </div>
 
           {/* Search and Profile Button */}
@@ -170,7 +161,9 @@ const Navbar = () => {
             {/* If logged in, show profile picture and dropdown */}
             {isLoggedIn ? (
               <div className="flex items-center gap-2">
-                <span className="text-lg font-semibold text-gray-600">Hello, {user?.name}</span>
+                <span className="text-lg font-semibold text-gray-600">
+                  {user?.name}
+                </span>
 
                 {/* Profile Image with Dropdown */}
                 <img
@@ -188,7 +181,7 @@ const Navbar = () => {
                     <ul className="py-2">
                       <li>
                         <Link
-                          to="/profile"
+                          to="/dashboard"
                           className="block px-4 py-2 text-gray-800 hover:bg-gray-200"
                         >
                           Your Profile
