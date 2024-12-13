@@ -1,7 +1,7 @@
-import React from 'react';
-import { Outlet } from 'react-router-dom';
-import Navbar from '../components/Navbar';
-import Footer from '../components/footer';
+import React from 'react'
+import { Outlet } from 'react-router-dom'
+import Navbar from '../components/Navbar'
+import Footer from '../components/footer'
 
 const CourseDetail = () => {
     return (
@@ -12,7 +12,7 @@ const CourseDetail = () => {
             </div>
             <Footer />
         </div>
-    );
-};
+    )
+}
 
-export default CourseDetail;
+export default CourseDetail
