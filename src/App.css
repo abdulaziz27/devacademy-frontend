@@ -3,12 +3,12 @@
 @tailwind utilities;
 
 #root {
-  width: 1000vh;
-  margin: 0 auto;
+    width: 1000vh;
+    margin: 0 auto;
 }
 
 ::-webkit-scrollbar {
-  display: none;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+    display: none;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
