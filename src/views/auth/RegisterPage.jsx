@@ -4,7 +4,7 @@ import swal from 'sweetalert';
 import { registerUser } from '../../api';
 
 const RegisterPage = () => {
-    const navigate = useNavigate(); // For navigation after registration
+    const navigate = useNavigate(); 
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -49,18 +49,15 @@ const RegisterPage = () => {
         setIsSubmitting(true);
 
         try {
-            // Register user
             const response = await registerUser(formData.name, formData.email, formData.password);
 
             if (response.token) {
-                // If registration successful, show success message and redirect to login
                 localStorage.setItem("accessToken", response.token);
                 swal("Success!", "Registration successful!", "success").then(() => {
-                    navigate('/login'); // Redirect to login page after successful registration
+                    navigate('/login'); 
                 });
             }
         } catch (error) {
-            // Handle registration error
             setErrors(error.response?.data?.errors || {});
             swal("Error!", "Registration failed. Please try again.", "error");
         } finally {
