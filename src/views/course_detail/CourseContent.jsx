@@ -1,7 +1,16 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import CourseSideBar from './CourseSideBar'
+import { useParams } from 'react-router-dom'
+import { getLessons, markLessonComplete } from '../../api'
 
 const CourseContent = () => {
+    // Import needed (Azz)
+    const { slug } = useParams()
+    const [currentLesson, setCurrentLesson] = useState(null)
+    const [lessons, setLessons] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [progress, setProgress] = useState({})
+
     const categories = [
         { id: 'transcript', name: 'Transcript' },
         { id: 'submission', name: 'Submission' },
@@ -66,6 +75,39 @@ const CourseContent = () => {
             setComments([...comments, newComment])
             setNewComment('')
         }
+    }
+
+    // Fetch lessons (Azzz)
+    useEffect(() => {
+        const fetchLessons = async () => {
+            try {
+                const response = await getLessons(slug)
+                setLessons(response.data)
+                setCurrentLesson(response.data[0])
+            } catch (error) {
+                console.error('Error fetching lessons:', error)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fetchLessons()
+    }, [slug])
+
+    const handleLessonComplete = async lessonId => {
+        try {
+            await markLessonComplete(lessonId)
+            setProgress(prev => ({
+                ...prev,
+                [lessonId]: true,
+            }))
+        } catch (error) {
+            console.error('Error marking lesson as complete:', error)
+        }
+    }
+
+    const handleLessonChange = lesson => {
+        setCurrentLesson(lesson)
     }
 
     return (
