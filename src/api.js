@@ -316,3 +316,27 @@ export const getSignatureKey = async (orderId, statusCode, grossAmount) => {
     )
     return response.data
 }
+
+export const getStudentDashboardData = async () => {
+    const response = await axios.get(
+        `${API_URL}/api/student/dashboard`,
+        withAuth()
+    )
+    return response.data
+}
+
+export const getTeacherDashboardData = async () => {
+    const response = await axios.get(
+        `${API_URL}/api/teacher/dashboard`,
+        withAuth()
+    )
+    return response.data
+}
+
+export const getAdminDashboardData = async () => {
+    const response = await axios.get(
+        `${API_URL}/api/admin/dashboard`,
+        withAuth()
+    )
+    return response.data
+}

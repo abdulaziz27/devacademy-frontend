@@ -2,11 +2,23 @@ import React, { useState, useEffect } from 'react'
 import Sidebar from '../components/SideBarDashboard'
 import thumbnail from '../../assets/images/thumbnail.jpg'
 import { getMyEnrolledCourses, getCourseDetails } from '../../api' // Gunakan fungsi baru untuk fetch data API
+import isAuthenticated from '../../auth'
+import { useNavigate, Link } from 'react-router-dom'
+import swal from 'sweetalert'
 
 const UserCourses = () => {
     const [activeTab, setActiveTab] = useState('On Progress')
     const [inProgressCourses, setInProgressCourses] = useState([])
     const [completedCourses, setCompletedCourses] = useState([])
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        if (!isAuthenticated()) {
+            swal('Warning!', 'Login terlebih dahulu!', 'warning').then(() => {
+                navigate('/login')
+            })
+        }
+    }, [navigate])
 
     useEffect(() => {
         const fetchCourses = async () => {

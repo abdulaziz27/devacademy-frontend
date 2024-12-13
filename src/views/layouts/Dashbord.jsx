@@ -1,385 +1,243 @@
-import React, { useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
 import Navbar from '../components/Navbar'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
-import '../../app.css'
 import Sidebar from '../components/SideBarDashboard'
+import isAuthenticated from '../../auth'
+import { useNavigate, Link } from 'react-router-dom'
+import swal from 'sweetalert'
+import { ClipLoader } from 'react-spinners'
 
-const Dashboard = ({
-    teacherCount,
-    studentCount,
-    courseCount,
-    subscription,
-    courses = [],
-    activities = [],
-    totalStudents,
-}) => {
-    // Hardcoded role (use 'owner', 'teacher', or 'student')
-    const role = 'student' // Change this to 'teacher' or 'student' to simulate other roles
-    const user = { name: 'John Doe' } // Simulated user data
+import {
+    getStudentDashboardData,
+    getTeacherDashboardData,
+    getAdminDashboardData,
+    getUserProfile,
+} from '../../api'
 
+const Dashboard = () => {
+    const [dashboardData, setDashboardData] = useState(null)
+    const [userProfile, setUserProfile] = useState(null)
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        if (!isAuthenticated()) {
+            swal('Warning!', 'Login terlebih dahulu!', 'warning').then(() => {
+                navigate('/login')
+            })
+        }
+    }, [navigate])
+    
     useEffect(() => {
         AOS.init({ duration: 1000, easing: 'ease-in-out', once: true })
 
-        const link = document.createElement('link')
-        link.href =
-            'https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap'
-        link.rel = 'stylesheet'
-        document.head.appendChild(link)
+        const fetchDashboardAndProfile = async () => {
+            try {
+                const profileResponse = await getUserProfile()
+                setUserProfile(profileResponse.data)
 
-        return () => {
-            document.head.removeChild(link)
+                const role = profileResponse.data.roles.includes('admin')
+                    ? 'admin'
+                    : profileResponse.data.roles.includes('teacher')
+                    ? 'teacher'
+                    : 'student'
+
+                let dashboardResponse
+
+                if (role === 'student') {
+                    dashboardResponse = await getStudentDashboardData()
+                } else if (role === 'teacher') {
+                    dashboardResponse = await getTeacherDashboardData()
+                } else if (role === 'admin') {
+                    dashboardResponse = await getAdminDashboardData()
+                }
+
+                setDashboardData(dashboardResponse)
+            } catch (err) {
+                setError(err)
+            } finally {
+                setLoading(false)
+            }
         }
+
+        fetchDashboardAndProfile()
     }, [])
+
+    if (loading) return (
+        <div className="flex justify-center items-center min-h-screen">
+            <ClipLoader size={50} color="#4fa94d" loading={loading} />
+        </div>
+    )
+    if (error) return <div>Error: {error.message}</div>
+
+    const role = userProfile?.roles.includes('admin')
+        ? 'admin'
+        : userProfile?.roles.includes('teacher')
+        ? 'teacher'
+        : 'student'
+
+    const userName = userProfile?.name || 'Guest'
 
     return (
         <div className="flex">
             <div className="w-[1200px] relative flex items-start mx-auto p-4 py-6 lg:py-8 gap-8">
                 <Sidebar />
-                {/* Main Content */}
                 <div className="w-full min-h-screen lg:w-5/6">
-                    {role === 'owner' && (
-                        <>
-                            <div className="space-y-6">
-                                <div>
-                                    <div className="text-2xl font-semibold">
-                                        Hello {user.name}
-                                    </div>
-                                    <h1 className="text-sm text-gray-500">
-                                        Welcome Back!
-                                    </h1>
+                    {role === 'admin' && (
+                        <div className="space-y-6 text-black">
+                            <div>
+                                <div className="text-2xl font-semibold">
+                                    Hello {userName}
                                 </div>
-
-                                {/* Statistics */}
-                                <div className="bg-gradient-to-br from-blue-700 to-blue-400 rounded-lg p-6 shadow-xl">
-                                    <div className="text-lg font-semibold text-white mb-4">
-                                        Statistics
-                                    </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                                        {[
-                                            {
-                                                label: 'Teachers',
-                                                count: teacherCount,
-                                                icon: 'teacher-icon',
-                                            },
-                                            {
-                                                label: 'Students',
-                                                count: studentCount,
-                                                icon: 'student-icon',
-                                            },
-                                            {
-                                                label: 'Courses',
-                                                count: courseCount,
-                                                icon: 'course-icon',
-                                            },
-                                            {
-                                                label: 'Transactions',
-                                                count:
-                                                    subscription?.length || 0,
-                                                icon: 'transaction-icon',
-                                            },
-                                        ].map(
-                                            ({ label, count, icon }, index) => (
-                                                <div
-                                                    key={index}
-                                                    className="bg-white bg-opacity-20 backdrop-filter backdrop-blur-sm rounded-lg p-3 md:p-5 text-center">
-                                                    <div className="flex items-center gap-4">
-                                                        <div className="rounded p-2">
-                                                            <svg
-                                                                className={`h-8 w-8 text-white ${icon}`}
-                                                                xmlns="http://www.w3.org/2000/svg"
-                                                                fill="none"
-                                                                viewBox="0 0 24 24"
-                                                                stroke="currentColor">
-                                                                {/* SVG path for each icon */}
-                                                            </svg>
-                                                        </div>
-                                                        <div className="text-white text-start">
-                                                            <div className="text-xl font-semibold">
-                                                                {label}
-                                                            </div>
-                                                            <div className="text-xs">
-                                                                {count}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )
-                                        )}
-                                    </div>
+                                <h1 className="text-sm text-gray-500">
+                                    Welcome Back!
+                                </h1>
+                            </div>
+                            <div className="bg-gradient-to-br from-blue-700 to-blue-400 rounded-lg p-4 sm:p-8 shadow-xl">
+                                <div className="text-lg font-semibold text-white mb-4">
+                                    Admin Statistics
                                 </div>
-
-                                {/* Activity */}
-                                <div className="text-xl">Activity</div>
-                                <div className="bg-white rounded-lg px-6 pt-6 pb-2 shadow border border-gray-200">
-                                    <table
-                                        id="dataTable"
-                                        className="min-w-full divide-y divide-gray-200">
-                                        <thead className="bg-gray-50">
-                                            <tr>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    Account
-                                                </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    Action
-                                                </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    Details
-                                                </th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    Date
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="bg-white divide-y divide-gray-200">
-                                            {activities.map(activity => (
-                                                <tr key={activity.id}>
-                                                    <td className="px-6 py-4 whitespace-nowrap">
-                                                        <div className="flex items-center">
-                                                            <div className="ml-4">
-                                                                <div className="text-sm font-medium text-gray-900">
-                                                                    {activity
-                                                                        .causer
-                                                                        ?.name ||
-                                                                        'System'}
-                                                                </div>
-                                                                <div className="text-sm text-gray-500">
-                                                                    {activity
-                                                                        .causer
-                                                                        ?.email ||
-                                                                        ''}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">
-                                                        <div className="text-sm text-gray-900">
-                                                            {
-                                                                activity.description
-                                                            }
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">
-                                                        <div className="text-sm text-gray-900">
-                                                            {activity.subject
-                                                                ? `${activity.subject_type} #${activity.subject_id}`
-                                                                : ''}
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">
-                                                        <div className="text-sm text-gray-900">
-                                                            {new Date(
-                                                                activity.created_at
-                                                            ).toLocaleString()}
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
+                                <div className="text-white">
+                                    <p>
+                                        Total Users: {dashboardData.users.total}
+                                    </p>
+                                    <p>
+                                        Students: {dashboardData.users.students}
+                                    </p>
+                                    <p>
+                                        Teachers: {dashboardData.users.teachers}
+                                    </p>
+                                    <p>Admins: {dashboardData.users.admin}</p>
+                                    <p>
+                                        Total Courses:{' '}
+                                        {dashboardData.courses.total}
+                                    </p>
+                                    <p>
+                                        Active Subscriptions:{' '}
+                                        {
+                                            dashboardData.subscriptions
+                                                .active_subscriptions
+                                        }
+                                    </p>
+                                    <p>
+                                        Total Revenue:{' '}
+                                        {
+                                            dashboardData.subscriptions
+                                                .total_revenue
+                                        }
+                                    </p>
                                 </div>
                             </div>
-                        </>
+                        </div>
                     )}
-
                     {role === 'teacher' && (
-                        <>
-                            <div className="space-y-6">
-                                <div>
-                                    <div className="text-2xl font-semibold">
-                                        Hello {user.name}
-                                    </div>
-                                    <h1 className="text-sm text-gray-500">
-                                        Welcome Back!
-                                    </h1>
+                        <div className="space-y-6 text-black">
+                            <div>
+                                <div className="text-2xl font-semibold">
+                                    Hello {userName}
                                 </div>
-
-                                {/* Teacher Statistics */}
-                                <div className="bg-gradient-to-br from-blue-700 to-blue-400 rounded-lg p-4 sm:p-8 shadow-xl">
-                                    <div className="text-lg font-semibold text-white mb-4">
-                                        Statistics
-                                    </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div className="bg-white bg-opacity-20 backdrop-filter backdrop-blur-sm rounded-lg p-3 md:p-5 text-center">
-                                            <div className="flex items-center gap-4">
-                                                <div className="rounded p-2">
-                                                    <svg
-                                                        className="h-8 w-8 text-white"
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        fill="none"
-                                                        viewBox="0 0 24 24"
-                                                        stroke="currentColor">
-                                                        {/* Icon for My Courses */}
-                                                    </svg>
-                                                </div>
-                                                <div className="text-white text-start">
-                                                    <div className="text-xl font-semibold">
-                                                        My Courses
-                                                    </div>
-                                                    <div className="text-xs">
-                                                        {courseCount}
-                                                    </div>
-                                                </div>
+                                <h1 className="text-sm text-gray-500">
+                                    Welcome Back!
+                                </h1>
+                            </div>
+                            <div className="bg-gradient-to-br from-blue-700 to-blue-400 rounded-lg p-4 sm:p-8 shadow-xl">
+                                <div className="text-lg font-semibold text-white mb-4">
+                                    Teacher Statistics
+                                </div>
+                                <div className="text-white">
+                                    <p>
+                                        Total Courses:{' '}
+                                        {dashboardData.courses.total}
+                                    </p>
+                                    <p>
+                                        Free Courses:{' '}
+                                        {dashboardData.courses.free_courses}
+                                    </p>
+                                    <p>
+                                        Premium Courses:{' '}
+                                        {dashboardData.courses.premium_courses}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    {role === 'student' && (
+                        <div className="space-y-6 text-black">
+                            <div>
+                                <div className="text-2xl font-semibold">
+                                    Hello {userName}
+                                </div>
+                                <h1 className="text-sm text-gray-500">
+                                    Welcome Back!
+                                </h1>
+                            </div>
+                            <div className="bg-gradient-to-br from-blue-700 to-blue-400 rounded-lg p-4 sm:p-8 shadow-xl">
+                                <div className="text-lg font-semibold text-white mb-4">
+                                    Subscription
+                                </div>
+                                <div className="bg-white bg-opacity-20 backdrop-filter backdrop-blur-sm rounded-lg p-3 md:p-5 text-center">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-4">
+                                            <div className="text-start text-sm w-3/4 text-white">
+                                                {dashboardData.subscription
+                                                    ?.is_active
+                                                    ? `Your subscription is active until ${new Date(
+                                                          dashboardData.subscription.details.end_date
+                                                      ).toLocaleDateString()}.`
+                                                    : 'You have not subscribed yet. Choose a plan to get started.'}
                                             </div>
                                         </div>
-                                        <div className="bg-white bg-opacity-20 backdrop-filter backdrop-blur-sm rounded-lg p-3 md:p-5 text-center">
-                                            <div className="flex items-center gap-4">
-                                                <div className="rounded p-2">
-                                                    <svg
-                                                        className="h-8 w-8 text-white"
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        fill="none"
-                                                        viewBox="0 0 24 24"
-                                                        stroke="currentColor">
-                                                        {/* Icon for My Students */}
-                                                    </svg>
-                                                </div>
-                                                <div className="text-white text-start">
-                                                    <div className="text-xl font-semibold">
-                                                        My Students
-                                                    </div>
-                                                    <div className="text-xs">
-                                                        {totalStudents}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Teacher's Courses */}
-                                <div className="bg-white bg-opacity-20 backdrop-filter backdrop-blur-sm rounded-lg p-4 sm:p-8 shadow-xl">
-                                    <div className="text-lg font-semibold text-gray-800">
-                                        Teaching Activities
-                                    </div>
-                                    <div className="space-y-6 mt-6">
-                                        {courses.length === 0 ? (
-                                            <div className="flex border rounded justify-between items-center p-4">
-                                                <div className="text-sm font-semibold text-gray-800">
-                                                    You are not teaching any
-                                                    courses.
-                                                </div>
-                                                <div>
-                                                    <Link
-                                                        to="/admin/courses/create"
-                                                        className="text-blue-500">
-                                                        Create a new course
-                                                    </Link>
-                                                </div>
-                                            </div>
+                                        {dashboardData.subscription
+                                            ?.is_active ? (
+                                            <span className="bg-white rounded px-4 py-2 font-semibold text-sm text-blue-500">
+                                                Active
+                                            </span>
                                         ) : (
-                                            courses.map(course => (
-                                                <div
-                                                    key={course.id}
-                                                    className="flex border rounded justify-between items-center p-4">
-                                                    <div className="text-sm font-semibold text-gray-800">
-                                                        {course.name}
-                                                    </div>
-                                                    <form
-                                                        action={`/admin/courses/destroy/${course.id}`}
-                                                        method="POST">
-                                                        <button
-                                                            type="submit"
-                                                            className="text-sm font-semibold text-red-500">
-                                                            Stop Teaching
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            ))
+                                            <Link
+                                                to="/pricing"
+                                                className="bg-white rounded px-4 py-2 font-semibold text-sm text-blue-500">
+                                                Subscribe
+                                            </Link>
                                         )}
                                     </div>
                                 </div>
                             </div>
-                        </>
-                    )}
-
-                    {role === 'student' && (
-                        <>
-                            <div className="space-y-6 text-black">
-                                <div>
-                                    <div className="text-2xl font-semibold">
-                                        Hello {user.name}
-                                    </div>
-                                    <h1 className="text-sm text-gray-500">
-                                        Welcome Back!
-                                    </h1>
+                            <div className="w-full rounded-lg bg-white shadow p-4 sm:p-8">
+                                <div className="text-lg font-semibold text-gray-800">
+                                    My Courses
                                 </div>
-
-                                {/* Subscription */}
-                                <div className="bg-gradient-to-br from-blue-700 to-blue-400 rounded-lg p-4 sm:p-8 shadow-xl">
-                                    <div className="text-lg font-semibold text-white mb-4">
-                                        Subscription
-                                    </div>
-                                    <div className="bg-white bg-opacity-20 backdrop-filter backdrop-blur-sm rounded-lg p-3 md:p-5 text-center">
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex items-center gap-4">
-                                                <div className="p-2">
-                                                    <svg
-                                                        className="h-8 w-8 text-white"
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        fill="none"
-                                                        viewBox="0 0 24 24"
-                                                        stroke="currentColor">
-                                                        {/* Icon for Subscription */}
-                                                    </svg>
-                                                </div>
-                                                <div className="text-start text-sm w-3/4 text-white">
-                                                    {subscription
-                                                        ? `Your subscription is active until ${new Date(
-                                                              subscription.endDate
-                                                          ).toLocaleDateString()}.`
-                                                        : `You haven't subscribed yet. Choose a subscription plan to get started.`}
-                                                </div>
+                                <div className="space-y-6 mt-6">
+                                    {dashboardData.enrolled_courses?.courses
+                                        .length === 0 ? (
+                                        <div className="flex border rounded justify-between items-center p-4">
+                                            <div className="text-sm font-semibold text-gray-800">
+                                                You have not enrolled in any
+                                                courses.
                                             </div>
-                                            {subscription ? (
-                                                <span className="bg-white rounded px-4 py-2 font-semibold text-sm text-blue-500">
-                                                    Active
-                                                </span>
-                                            ) : (
-                                                <Link
-                                                    to="/pricing"
-                                                    className="bg-white rounded px-4 py-2 font-semibold text-sm text-blue-500">
-                                                    Subscribe
-                                                </Link>
-                                            )}
                                         </div>
-                                    </div>
-                                </div>
-
-                                {/* My Courses */}
-                                <div className="w-full rounded-lg bg-white shadow p-4 sm:p-8">
-                                    <div className="text-lg font-semibold text-gray-800">
-                                        My Courses
-                                    </div>
-                                    <div className="space-y-6 mt-6">
-                                        {courses.length === 0 ? (
-                                            <div className="flex border rounded justify-between items-center p-4">
-                                                <div className="text-sm font-semibold text-gray-800">
-                                                    You haven't enrolled in any
-                                                    courses.
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            courses.map(course => (
+                                    ) : (
+                                        dashboardData.enrolled_courses?.courses.map(
+                                            course => (
                                                 <div
                                                     key={course.id}
                                                     className="flex border rounded justify-between items-center p-4">
                                                     <div className="text-sm font-semibold text-gray-800">
-                                                        {course.name}
+                                                        {course.course.title}
                                                     </div>
                                                     <Link
-                                                        to={`/course/${course.id}`}
+                                                        to={`/course/${course.course.slug}`}
                                                         className="text-sm font-semibold text-blue-500 px-4 py-2">
                                                         Continue
                                                     </Link>
                                                 </div>
-                                            ))
-                                        )}
-                                    </div>
+                                            )
+                                        )
+                                    )}
                                 </div>
                             </div>
-                        </>
+                        </div>
                     )}
                 </div>
             </div>

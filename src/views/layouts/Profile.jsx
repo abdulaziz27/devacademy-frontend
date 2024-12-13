@@ -13,7 +13,6 @@ const ProfilePage = () => {
     const [email, setEmail] = useState('')
     const [isAvatarChanged, setIsAvatarChanged] = useState(false)
     const [errors, setErrors] = useState({})
-    const [loading, setLoading] = useState(true)
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -117,10 +116,6 @@ const ProfilePage = () => {
                 text: 'Please try again later.',
             })
         }
-    }
-
-    if (loading) {
-        return <div>Loading...</div>
     }
 
     return (
