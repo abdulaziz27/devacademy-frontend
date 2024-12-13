@@ -7,45 +7,36 @@ import axios from "axios";
 function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [visible, setVisible] = useState(false); // For password visibility toggle
+  const [visible, setVisible] = useState(false); 
   const navigate = useNavigate();
 
-  // Toggle password visibility
   function iconPass() {
     setVisible(!visible);
   }
 
-  // Handle login form submission
   const handleLogin = async (event) => {
     event.preventDefault();
 
     try {
-      // Call loginUser API
       const result = await loginUser(email, password);
 
-      // Check if result contains accessToken
       if (result?.token) {
-        // Store token in localStorage
         localStorage.setItem("accessToken", result.token);
         
-        // Set the token in axios headers for future requests
         axios.defaults.headers.common['Authorization'] = `Bearer ${result.token}`;
 
-        // Display success message and navigate to home
         swal("Success!", "Login berhasil!", "success").then(() => {
-          navigate("/"); // Navigate to home or dashboard after successful login
+          navigate("/"); 
         });
       } else {
         swal("Error!", "Login gagal. Silakan coba lagi.", "error");
       }
     } catch (error) {
-      // Improved error handling for failed login
       swal("Error!", "Terjadi kesalahan selama proses login. Silakan coba lagi.", "error");
       console.error("Error during login:", error);
     }
   };
 
-  // Adding Google Fonts in the head tag
   useEffect(() => {
     const link = document.createElement('link');
     link.href = "https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap";

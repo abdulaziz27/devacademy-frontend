@@ -56,7 +56,12 @@ export const logoutUser = async () => {
 
 export const updateUserProfile = async (updatedData) => {
   try {
-    const response = await axios.post(`${API_URL}/api/profile/update`,  updatedData, withAuth());
+    const response = await axios.post(`${API_URL}/api/profile/update`, updatedData, withAuth());
+    
+    const updatedUser = response.data.user;
+    if (updatedUser) {
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+    }
 
     return response.data;
   } catch (error) {
@@ -64,6 +69,7 @@ export const updateUserProfile = async (updatedData) => {
     throw error;
   }
 };
+
 
 
 export const getUserProfile = async () => {
