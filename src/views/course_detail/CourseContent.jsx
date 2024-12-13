@@ -183,14 +183,6 @@ const CourseContent = () => {
                                         </tr>
                                         <tr className="border-b border-gray-300">
                                             <td className="p-2 border-r border-gray-300">
-                                                Time remaining
-                                            </td>
-                                            <td className="p-2 text-red-600">
-                                                {timeRemaining}
-                                            </td>
-                                        </tr>
-                                        <tr className="border-b border-gray-300">
-                                            <td className="p-2 border-r border-gray-300">
                                                 Last modified
                                             </td>
                                             <td className="p-2">
