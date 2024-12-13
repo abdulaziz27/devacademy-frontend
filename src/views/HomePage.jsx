@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import Navbar from './components/navbar'
+import Navbar from './components/Navbar'
 import Footer from './components/footer'
 import { getAllCourses } from '../api'
 import thumbnail from '../assets/images/thumbnail.jpg'
@@ -102,11 +102,12 @@ const HomePage = () => {
 
     // Change page
     const paginate = pageNumber => setCurrentPage(pageNumber)
-    if (loading) return (
-        <div className="flex justify-center items-center min-h-screen">
-            <ClipLoader size={50} color="#4fa94d" loading={loading} />
-        </div>
-    )
+    if (loading)
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <ClipLoader size={50} color="#4fa94d" loading={loading} />
+            </div>
+        )
     if (error) return <div>Error: {error.message}</div>
     return (
         <div className="antialiased bg-white select-none">
@@ -127,9 +128,12 @@ const HomePage = () => {
                     <div className="absolute inset-0 w-3/4 bg-gradient-to-r from-blue-500 to-transparent"></div>
                     <div className="relative flex items-center h-full">
                         <div className="p-12">
-                            <h1 className="text-4xl font-semibold mb-4 text-white">Welcome to Our Courses</h1>
+                            <h1 className="text-4xl font-semibold mb-4 text-white">
+                                Welcome to Our Courses
+                            </h1>
                             <p className="text-white w-3/6">
-                                Unlock your potential and build a successful career through our expertly designed courses.
+                                Unlock your potential and build a successful
+                                career through our expertly designed courses.
                             </p>
                         </div>
                     </div>
@@ -139,15 +143,19 @@ const HomePage = () => {
             {/* Courses Section */}
             <section className="max-w-[1200px] mx-auto mb-24 mt-10 p-4 py-6 lg:py-8">
                 <div className="flex justify-between mb-8">
-                    <h1 className="text-3xl text-black font-semibold">Featured Courses</h1>
+                    <h1 className="text-3xl text-black font-semibold">
+                        Featured Courses
+                    </h1>
                 </div>
                 <div
                     className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
                     data-aos="fade-up">
-                    {currentCourses.map((course) => (
+                    {currentCourses.map(course => (
                         <div
                             key={course.id}
-                            className={`relative bg-white border rounded-lg p-3 hover:shadow-lg hover:-translate-y-2 transition duration-300 ease-in-out transform flex flex-col justify-between ${course.is_premium ? 'border-yellow-400' : ''}`}>
+                            className={`relative bg-white border rounded-lg p-3 hover:shadow-lg hover:-translate-y-2 transition duration-300 ease-in-out transform flex flex-col justify-between ${
+                                course.is_premium ? 'border-yellow-400' : ''
+                            }`}>
                             {course.is_premium && (
                                 <div className="absolute top-0 right-0 bg-yellow-400 text-white text-xs font-bold px-2 py-1 rounded-bl-lg">
                                     Premium
@@ -160,16 +168,30 @@ const HomePage = () => {
                                 loading="lazy"
                             />
                             <div className="flex flex-col flex-grow">
-                                <h1 className="text-black font-semibold text-xl mb-2">{course.title}</h1>
-                                <p className="text-md text-gray-600 min-h-16">{course.description}</p>
+                                <h1 className="text-black font-semibold text-xl mb-2">
+                                    {course.title}
+                                </h1>
+                                <p className="text-md text-gray-600 min-h-16">
+                                    {course.description}
+                                </p>
                                 <div className="flex items-center justify-between mt-auto">
                                     <div className="flex-row items-center">
-                                        <p className="ml-1 text-sm text-gray-600 mb-2">By {course.teacher?.name || 'Unknown'}</p>
-                                        <span className="text-xs text-gray-800">{course.students_count || 0} Students</span>
+                                        <p className="ml-1 text-sm text-gray-600 mb-2">
+                                            By{' '}
+                                            {course.teacher?.name || 'Unknown'}
+                                        </p>
+                                        <span className="text-xs text-gray-800">
+                                            {course.students_count || 0}{' '}
+                                            Students
+                                        </span>
                                     </div>
                                     <Link
                                         to={`/details/${course.slug}`}
-                                        className={`text-center font-semibold text-sm px-4 py-2 rounded transition duration-300 ease-in-out w-1/2 ${course.is_premium ? 'bg-yellow-500 hover:bg-yellow-600 text-white' : 'bg-blue-500 hover:bg-blue-600 text-white'}`}>
+                                        className={`text-center font-semibold text-sm px-4 py-2 rounded transition duration-300 ease-in-out w-1/2 ${
+                                            course.is_premium
+                                                ? 'bg-yellow-500 hover:bg-yellow-600 text-white'
+                                                : 'bg-blue-500 hover:bg-blue-600 text-white'
+                                        }`}>
                                         Learn Now
                                     </Link>
                                 </div>

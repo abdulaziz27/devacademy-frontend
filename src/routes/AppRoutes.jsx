@@ -13,6 +13,7 @@ import Settings from '../views/layouts/Settings'
 import UserCourses from '../views/layouts/UserCourses'
 import CoursePreview from '../views/course_detail/CoursePreview'
 import CourseContent from '../views/course_detail/CourseContent'
+import DiscussionForum from '../views/forum/DiscussionForum'
 
 function AppRoutes() {
     return (
@@ -79,6 +80,7 @@ function AppRoutes() {
                 }>
                 {/* Add teacher routes here */}
             </Route>
+            <Route path="/discussion-forum" element={<DiscussionForum />} />
         </Routes>
     )
 }

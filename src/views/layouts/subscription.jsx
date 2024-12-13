@@ -64,11 +64,12 @@ const SubscriptionPage = () => {
         }
     }
 
-    if (loading) return (
-        <div className="flex justify-center items-center min-h-screen">
-            <ClipLoader size={50} color="#4fa94d" loading={loading} />
-        </div>
-    )
+    if (loading)
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <ClipLoader size={50} color="#4fa94d" loading={loading} />
+            </div>
+        )
     if (error) return <div>Error: {error.message}</div>
 
     return (

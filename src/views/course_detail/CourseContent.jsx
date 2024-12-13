@@ -12,11 +12,11 @@ const CourseContent = () => {
     const [progress, setProgress] = useState({})
 
     const categories = [
-        { id: 'transcript', name: 'Transcript' },
+        { id: 'detail', name: 'Detail' },
         { id: 'submission', name: 'Submission' },
     ]
 
-    const [activeTab, setActiveTab] = useState('transcript')
+    const [activeTab, setActiveTab] = useState('detail')
     const [file, setFile] = useState(null)
     const [fileName, setFileName] = useState('')
     const [submittedFileName, setSubmittedFileName] = useState('')
@@ -141,10 +141,10 @@ const CourseContent = () => {
                             ))}
                         </div>
 
-                        {/* Transcript */}
+                        {/* Detail */}
                         <div
                             className={`max-w-full text-justify border border-gray-200 p-4 rounded-lg mb-4 ${
-                                activeTab === 'transcript' ? '' : 'hidden'
+                                activeTab === 'detail' ? '' : 'hidden'
                             }`}>
                             <span className="text-base font-normal text-slate-800">
                                 In programming and mathematics, a variable is a

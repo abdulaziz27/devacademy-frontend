@@ -132,6 +132,11 @@ const Navbar = () => {
                             className="flex text-lg font-semibold text-gray-600 hover:text-blue-500 transition duration-300 ease-in-out">
                             Course
                         </Link>
+                        <Link
+                            to="/discussion-forum"
+                            className="flex text-lg font-semibold text-gray-600 hover:text-blue-500 transition duration-300 ease-in-out">
+                            Course
+                        </Link>
                     </div>
 
                     {/* Search and Profile Button */}
