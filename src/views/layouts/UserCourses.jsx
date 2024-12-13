@@ -1,79 +1,71 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/SideBarDashboard';
 import thumbnail from '../../assets/images/thumbnail.jpg';
+import { getMyEnrolledCourses, getCourseDetails } from '../../api'; // Gunakan fungsi baru untuk fetch data API
 
 const UserCourses = () => {
     const [activeTab, setActiveTab] = useState('On Progress');
+    const [inProgressCourses, setInProgressCourses] = useState([]);
+    const [completedCourses, setCompletedCourses] = useState([]);
 
-    const inProgressCourses = [
-        {
-            title: 'Generative Deep Learning with TensorFlow: Advanced Techniques and Applications',
-            category: 'Deep Learning',
-            status: 'In Progress',
-            image: thumbnail,
-            teacher: 'Dr. Jane Smith',
-            students: 120,
-        },
-        {
-            title: 'Advanced Machine Learning: From Algorithms to Implementations',
-            category: 'Machine Learning',
-            status: 'In Progress',
-            image: thumbnail,
-            teacher: 'Prof. John Doe',
-            students: 95,
-        },
-        {
-            title: 'Natural Language Processing with Transformers',
-            category: 'AI',
-            status: 'In Progress',
-            image: thumbnail,
-            teacher: 'Dr. Emily White',
-            students: 85,
-        },
-        {
-            title: 'Python for Data Science: Data Wrangling and Visualization',
-            category: 'Data Science',
-            status: 'In Progress',
-            image: thumbnail,
-            teacher: 'Prof. Michael Brown',
-            students: 150,
-        },
-    ];
-    
-    const completedCourses = [
-        {
-            title: 'Introduction to AI: The Basics and Beyond',
-            category: 'AI',
-            status: 'Completed',
-            image: thumbnail,
-            teacher: 'Dr. Alice Green',
-            students: 200,
-        },
-        {
-            title: 'Data Science with Python: A Comprehensive Guide',
-            category: 'Data Science',
-            status: 'Completed',
-            image: thumbnail,
-            teacher: 'Prof. David Blue',
-            students: 175,
-        },
-        {
-            title: 'Machine Learning Algorithms: A Hands-On Approach',
-            category: 'Machine Learning',
-            status: 'Completed',
-            image: thumbnail,
-            teacher: 'Dr. Sarah Johnson',
-            students: 140,
-        },
-        {
-            title: 'Deep Learning Fundamentals: Neural Networks from Scratch',
-            category: 'Deep Learning',
-            status: 'Completed',
-            image: thumbnail,
-            teacher: 'Prof. William Black',
-            students: 160,
-        },
-    ];
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                const response = await getMyEnrolledCourses(); // API call untuk data kursus yang di-enroll
+                const courses = response.data;
+
+                // Ambil detail tambahan untuk setiap kursus
+                const detailedCourses = await Promise.all(
+                    courses.map(async course => {
+                        const detailResponse = await getCourseDetails(course.course.slug);
+                        const details = detailResponse.data;
+
+                        return {
+                            ...course,
+                            course: {
+                                ...course.course,
+                                teacher: details.teacher?.name || 'Unknown Teacher',
+                                category: details.category?.name || 'Unknown Category',
+                                thumbnail: details.thumbnail || thumbnail,
+                            },
+                        };
+                    })
+                );
+
+                // Pisahkan kursus berdasarkan status selesai atau belum
+                const inProgress = detailedCourses.filter(course => !course.completed_at);
+                const completed = detailedCourses.filter(course => course.completed_at);
+
+                // Map data API ke struktur yang sesuai dengan UI
+                setInProgressCourses(
+                    inProgress.map(course => ({
+                        id: course.course.id,
+                        title: course.course.title,
+                        category: course.course.category,
+                        status: 'In Progress',
+                        image: course.course.thumbnail,
+                        teacher: course.course.teacher,
+                        progress: course.progress,
+                    }))
+                );
+
+                setCompletedCourses(
+                    completed.map(course => ({
+                        id: course.course.id,
+                        title: course.course.title,
+                        category: course.course.category,
+                        status: 'Completed',
+                        image: course.course.thumbnail,
+                        teacher: course.course.teacher,
+                    }))
+                );
+            } catch (error) {
+                console.error('Failed to fetch courses:', error);
+            }
+        };
+
+        fetchCourses();
+    }, []);
 
     return (
         <div className="flex select-none">
@@ -110,12 +102,12 @@ const UserCourses = () => {
                                             Completed
                                         </button>
                                     </header>
-                                    
+
                                     <div className="flex flex-col gap-3">
                                         {/* In Progress Courses */}
                                         {activeTab === 'On Progress' &&
-                                            inProgressCourses.map((course, index) => (
-                                                <div key={index} className="flex text-black">
+                                            inProgressCourses.map(course => (
+                                                <div key={course.id} className="flex text-black">
                                                     <div className="content-center flex border shadow rounded-lg py-3 px-4 w-full">
                                                         <img
                                                             src={course.image}
@@ -125,28 +117,10 @@ const UserCourses = () => {
                                                         <div className="ml-5 w-1/2 content-center">
                                                             <h1 className="text-lg text-slate-900 font-medium">{course.title}</h1>
                                                             <span className="text-base text-gray-500 font-normal">{course.category}</span>
+                                                            <p className="text-sm mt-2">{`Progress: ${course.progress.completed_lessons}/${course.progress.total_lessons} lessons`}</p>
                                                         </div>
                                                         <div className="flex flex-col items-end ml-auto my-auto">
-                                                            <div className="flex flex-col mb-3">
-                                                                <span className="text-sm font-normal">By {course.teacher}</span>
-                                                                <span className="flex flex-row items-center place-self-end text-sm font-normal">
-                                                                    <svg
-                                                                        className="h-4 w-4 mr-2 text-gray-800"
-                                                                        xmlns="http://www.w3.org/2000/svg"
-                                                                        fill="none"
-                                                                        viewBox="0 0 24 24"
-                                                                        stroke="currentColor"
-                                                                    >
-                                                                        <path
-                                                                            strokeLinecap="round"
-                                                                            strokeLinejoin="round"
-                                                                            strokeWidth="2"
-                                                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                                                                        />
-                                                                    </svg>
-                                                                    {course.students} students
-                                                                </span>
-                                                            </div>
+                                                            <span className="text-sm font-normal mb-3">By {course.teacher}</span>
                                                             <button className="place-self-end px-8 py-2 rounded-lg text-sm font-medium bg-blue-600 hover:bg-blue-800 text-white hover:text-white border-blue-600 hover:border-blue-800 focus:outline-none transition ease-in-out duration-300">
                                                                 Resume
                                                             </button>
@@ -154,11 +128,11 @@ const UserCourses = () => {
                                                     </div>
                                                 </div>
                                             ))}
-                                        
+
                                         {/* Completed Courses */}
                                         {activeTab === 'Completed' &&
-                                            completedCourses.map((course, index) => (
-                                                <div key={index} className="flex text-black">
+                                            completedCourses.map(course => (
+                                                <div key={course.id} className="flex text-black">
                                                     <div className="content-center flex border shadow rounded-lg py-3 px-4 w-full">
                                                         <img
                                                             src={course.image}
@@ -170,33 +144,14 @@ const UserCourses = () => {
                                                             <span className="text-base text-gray-500 font-normal">{course.category}</span>
                                                             <div></div>
                                                             <div className="flex flex-row items-center mt-4">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" className="bg-green-200 rounded-full p-1 mr-2" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" className="bg-green-200 rounded-full p-1 mr-2" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                                                                     <polyline points="20 6 9 17 4 12"></polyline>
                                                                 </svg>
                                                                 Completed
                                                             </div>
                                                         </div>
                                                         <div className="flex flex-col items-end ml-auto my-auto">
-                                                            <div className="flex flex-col mb-3">
-                                                                <span className="text-sm font-normal">By {course.teacher}</span>
-                                                                <span className="flex flex-row items-center place-self-end text-sm font-normal">
-                                                                    <svg
-                                                                        className="h-4 w-4 mr-2 text-gray-800"
-                                                                        xmlns="http://www.w3.org/2000/svg"
-                                                                        fill="none"
-                                                                        viewBox="0 0 24 24"
-                                                                        stroke="currentColor"
-                                                                    >
-                                                                        <path
-                                                                            strokeLinecap="round"
-                                                                            strokeLinejoin="round"
-                                                                            strokeWidth="2"
-                                                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                                                                        />
-                                                                    </svg>
-                                                                    {course.students} students
-                                                                </span>
-                                                            </div>
+                                                            <span className="text-sm font-normal mb-3">By {course.teacher}</span>
                                                             <button className="place-self-end px-8 py-2 rounded-lg text-sm font-medium bg-blue-600 hover:bg-blue-800 text-white hover:text-white border-blue-600 hover:border-blue-800 focus:outline-none transition ease-in-out duration-300">
                                                                 Review
                                                             </button>
