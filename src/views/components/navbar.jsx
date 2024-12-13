@@ -2,29 +2,28 @@ import SearchBar from './SearchBar';
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import swal from 'sweetalert';
-import { logoutUser, getUserProfile } from '../../api'; // Import necessary API functions
-import userprofile from '../../assets/images/user-profile.png'; // Default profile image
-import isAuthenticated from '../../auth'; // Import isAuthenticated function
+import { logoutUser, getUserProfile } from '../../api'; 
+import userprofile from '../../assets/images/user-profile.png'; 
+import isAuthenticated from '../../auth'; 
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false); // State for the sidebar
-  const [isScrolled, setIsScrolled] = useState(false); // State for scroll effect
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login status
-  const [name, setName] = useState(null); // User name state
-  const [avatar, setAvatar] = useState(userprofile); // Default avatar state
-  const [dropdownOpen, setDropdownOpen] = useState(false); // State to handle dropdown visibility
-  const dropdownRef = useRef(null); // Reference to dropdown
-  const profileRef = useRef(null); // Reference to profile image
-  const navigate = useNavigate(); // For navigation
+  const [isOpen, setIsOpen] = useState(false); 
+  const [isScrolled, setIsScrolled] = useState(false); 
+  const [isLoggedIn, setIsLoggedIn] = useState(false); 
+  const [name, setName] = useState(null); 
+  const [avatar, setAvatar] = useState(userprofile); 
+  const [dropdownOpen, setDropdownOpen] = useState(false); 
+  const dropdownRef = useRef(null);
+  const profileRef = useRef(null); 
+  const navigate = useNavigate(); 
 
   useEffect(() => {
-    // Check if the user is logged in using the isAuthenticated function
     if (isAuthenticated()) {
       setIsLoggedIn(true);
       getUserProfile()
         .then((profile) => {
-          setName(profile.data.name); // Set user name
-          setAvatar(profile.data.avatar || userprofile); // Set user avatar or default
+          setName(profile.data.name); 
+          setAvatar(profile.data.avatar || userprofile); 
         })
         .catch((error) => {
           console.error('Error fetching user profile:', error);
@@ -45,7 +44,6 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
-    // Close dropdown if click is outside of the dropdown or profile image
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target) && !profileRef.current.contains(e.target)) {
         setDropdownOpen(false);
@@ -54,7 +52,6 @@ const Navbar = () => {
 
     document.addEventListener('mousedown', handleClickOutside);
 
-    // Clean up the event listener on component unmount
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -62,13 +59,12 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      // Call logoutUser API
       await logoutUser();
       swal('Success!', 'You have been logged out.', 'success').then(() => {
         setIsLoggedIn(false);
-        setName(null); // Clear name
-        setAvatar(userprofile); // Reset avatar to default
-        navigate('/login'); // Redirect to login page after logout
+        setName(null); 
+        setAvatar(userprofile); 
+        navigate('/login'); 
       });
     } catch (error) {
       swal('Error!', 'An error occurred during logout.', 'error');
@@ -142,15 +138,15 @@ const Navbar = () => {
 
                 {/* Profile Image with Dropdown */}
                 <img
-                  ref={profileRef} // Reference to profile image
-                  src={avatar} // Use the avatar from API or default
+                  ref={profileRef}
+                  src={avatar} 
                   alt="Profile"
                   className="w-8 h-8 rounded-full cursor-pointer"
                   onClick={toggleDropdown}
                 />
                 {dropdownOpen && (
                   <div
-                    ref={dropdownRef} // Reference to dropdown
+                    ref={dropdownRef} 
                     className="absolute top-20 mt-2 w-48 bg-white shadow-lg rounded-md border border-gray-200 z-50"
                   >
                     <ul className="py-2">
@@ -175,7 +171,6 @@ const Navbar = () => {
                 )}
               </div>
             ) : (
-              // If not logged in, show login and signup buttons
               <nav className="relative flex gap-4">
                 <a
                   href="/login"
