@@ -1,9 +1,9 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import Footer from './components/footer';
+import Navbar from '../components/Navbar';
+import Footer from '../components/footer';
 
-const MenuDashboard = () => {
+const CourseDetail = () => {
     return (
         <div className="min-h-screen bg-gray-100">
             <Navbar />
@@ -15,4 +15,4 @@ const MenuDashboard = () => {
     );
 };
 
-export default MenuDashboard;
+export default CourseDetail;

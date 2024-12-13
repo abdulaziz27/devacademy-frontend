@@ -10,6 +10,8 @@ import Dashboard from '../views/layouts/dashbord';
 import ProfilePage from '../views/layouts/Profile';
 import Settings from '../views/layouts/Settings';
 import UserCourses from '../views/layouts/UserCourses';
+import CourseDetail from '../views/course_detail/CourseDetail';
+import CourseContent from '../views/course_detail/CourseContent';
 
 function AppRoutes() {
     return (
@@ -20,11 +22,13 @@ function AppRoutes() {
             <Route path="/pricing" element={<SubscriptionPage />} />
             <Route path="/courses" element={<CoursesPage />} />/
             <Route path="/*" element={<MenuDashboard />}>
-                {/* Nested routes under MenuDashboard */}
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="profile" element={<ProfilePage />} />
                 <Route path="settings" element={<Settings />} />
                 <Route path="user-courses" element={<UserCourses />} />
+            </Route>
+            <Route path="/*" element={<CourseDetail />}>
+                <Route path="course-detail" element={<CourseContent />} />
             </Route>
         </Routes>
     );
