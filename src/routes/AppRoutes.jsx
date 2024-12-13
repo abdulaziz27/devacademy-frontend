@@ -1,5 +1,6 @@
 import React from 'react'
 import { Routes, Route } from 'react-router-dom'
+import ProtectedRoute from '../components/ProtectedRoute'
 import LoginPage from '../views/auth/LoginPage'
 import RegisterPage from '../views/auth/RegisterPage'
 import HomePage from '../views/HomePage'
@@ -10,25 +11,73 @@ import Dashboard from '../views/layouts/dashbord'
 import ProfilePage from '../views/layouts/Profile'
 import Settings from '../views/layouts/Settings'
 import UserCourses from '../views/layouts/UserCourses'
-import CourseDetail from '../views/course_detail/CourseDetail'
+import CoursePreview from '../views/course_detail/CoursePreview'
 import CourseContent from '../views/course_detail/CourseContent'
 
 function AppRoutes() {
     return (
         <Routes>
+            {/* Public Routes */}
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/courses" element={<CoursesPage />} />
+            <Route path="/courses/:slug" element={<CoursePreview />} />
             <Route path="/pricing" element={<SubscriptionPage />} />
-            <Route path="/courses" element={<CoursesPage />} />/
-            <Route path="/*" element={<MenuDashboard />}>
+
+            {/* <Route
+                path="/pricing"
+                element={
+                    <ProtectedRoute>
+                        <SubscriptionPage />
+                    </ProtectedRoute>
+                }
+            /> */}
+
+            {/* Learning Routes - Protected */}
+            <Route
+                path="/learn/courses/:slug"
+                element={
+                    <ProtectedRoute>
+                        <CourseContent />
+                    </ProtectedRoute>
+                }
+            />
+
+            {/* Dashboard Routes */}
+            <Route
+                path="/*"
+                element={
+                    <ProtectedRoute>
+                        <MenuDashboard />
+                    </ProtectedRoute>
+                }>
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="profile" element={<ProfilePage />} />
                 <Route path="settings" element={<Settings />} />
                 <Route path="user-courses" element={<UserCourses />} />
             </Route>
-            <Route path="/*" element={<CourseDetail />}>
-                <Route path="course-detail" element={<CourseContent />} />
+
+            {/* Admin Routes */}
+            <Route
+                path="/admin/*"
+                element={
+                    <ProtectedRoute allowedRoles={['admin']}>
+                        <MenuDashboard />
+                    </ProtectedRoute>
+                }>
+                {/* Add admin routes here */}
+            </Route>
+
+            {/* Teacher Routes */}
+            <Route
+                path="/teacher/*"
+                element={
+                    <ProtectedRoute allowedRoles={['teacher']}>
+                        <MenuDashboard />
+                    </ProtectedRoute>
+                }>
+                {/* Add teacher routes here */}
             </Route>
         </Routes>
     )

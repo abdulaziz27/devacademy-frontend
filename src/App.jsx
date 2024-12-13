@@ -1,12 +1,15 @@
 import React from 'react'
 import { BrowserRouter as Router } from 'react-router-dom'
+import { AuthProvider } from './contexts/AuthContext'
 import AppRoutes from './routes/AppRoutes'
 import './app.css'
 
 function App() {
     return (
         <Router>
-            <AppRoutes />
+            <AuthProvider>
+                <AppRoutes />
+            </AuthProvider>
         </Router>
     )
 }
