@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from './components/Navbar'
-import Footer from './components/footer'
+import Footer from './components/Footer'
 import thumbnail from '../assets/images/thumbnail.jpg'
 import advantage from '../assets/images/keunggulan.png'
 import AOS from 'aos'

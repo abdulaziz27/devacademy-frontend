@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
-import Footer from '../components/footer'
+import Footer from '../components/Footer'
 import { getAllCourses, getCategories } from '../../api'
 
 const CoursesPage = () => {
@@ -170,7 +170,7 @@ const CoursesPage = () => {
                                                 <Link
                                                     to={`/courses/${course.slug}`}
                                                     className="text-center font-semibold bg-blue-500 text-sm hover:bg-blue-600 text-white hover:text-white px-4 py-2 rounded transition duration-300 ease-in-out w-1/2">
-                                                    Learn Now
+                                                    Download
                                                 </Link>
                                             </div>
                                         </div>
