@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { getUserProfile } from '../api'
 import Swal from 'sweetalert2'
+import { ClipLoader } from 'react-spinners'
 
 const AuthContext = createContext(null)
 
@@ -61,9 +62,12 @@ export const AuthProvider = ({ children }) => {
         checkAuth,
     }
 
-    if (loading) {
-        return <div>Loading...</div> // Replace with your loading component
-    }
+    if (loading) return (
+        <div className="flex justify-center items-center min-h-screen">
+            <ClipLoader size={50} color="#4fa94d" loading={loading} />
+        </div>
+    )
+    if (error) return <div>Error: {error.message}</div>
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

@@ -8,6 +8,7 @@ import {
     handleSubscriptionCallback,
     getSignatureKey,
 } from '../../api'
+import { ClipLoader } from 'react-spinners'
 
 const SubscriptionPage = () => {
     const [plans, setPlans] = useState([])
@@ -63,8 +64,12 @@ const SubscriptionPage = () => {
         }
     }
 
-    if (loading) return <p>Loading subscription plans...</p>
-    if (error) return <p>{error}</p>
+    if (loading) return (
+        <div className="flex justify-center items-center min-h-screen">
+            <ClipLoader size={50} color="#4fa94d" loading={loading} />
+        </div>
+    )
+    if (error) return <div>Error: {error.message}</div>
 
     return (
         <div className="bg-white select-none">

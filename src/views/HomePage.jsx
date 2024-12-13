@@ -1,97 +1,23 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import Navbar from './components/Navbar'
-import Footer from './components/Footer'
+import Navbar from './components/navbar'
+import Footer from './components/footer'
+import { getAllCourses } from '../api'
 import thumbnail from '../assets/images/thumbnail.jpg'
 import advantage from '../assets/images/keunggulan.png'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 import '../app.css'
+import { ClipLoader } from 'react-spinners'
 
-function HomePage() {
-    const categories = [
-        { id: 1, name: 'Programming' },
-        { id: 2, name: 'Design' },
-        { id: 3, name: 'Business' },
-        { id: 4, name: 'Personal Development' },
-    ]
-
-    const coursesByCategory = {
-        1: [
-            {
-                id: 1,
-                name: 'JavaScript Basics',
-                about: 'Learn JavaScript.',
-                teacher: { user: { name: 'John' } },
-                students: [{}, {}],
-                thumbnail: null,
-            },
-            {
-                id: 2,
-                name: 'Advanced Python',
-                about: 'Master Python.',
-                teacher: { user: { name: 'Alice' } },
-                students: [{}, {}, {}],
-                thumbnail: null,
-            },
-        ],
-        2: [
-            {
-                id: 3,
-                name: 'UI/UX Design Principles',
-                about: 'Create great designs.',
-                teacher: { user: { name: 'Jane' } },
-                students: [{}, {}],
-                thumbnail: null,
-            },
-            {
-                id: 4,
-                name: 'Graphic Design Essentials',
-                about: 'Design foundations.',
-                teacher: { user: { name: 'Mike' } },
-                students: [{}],
-                thumbnail: null,
-            },
-        ],
-        3: [
-            {
-                id: 5,
-                name: 'Marketing 101',
-                about: 'Intro to marketing.',
-                teacher: { user: { name: 'Sarah' } },
-                students: [{}, {}],
-                thumbnail: null,
-            },
-            {
-                id: 6,
-                name: 'Startup Growth Hacks',
-                about: 'Startup tips.',
-                teacher: { user: { name: 'David' } },
-                students: [{}, {}, {}],
-                thumbnail: null,
-            },
-        ],
-        4: [
-            {
-                id: 7,
-                name: 'Time Management',
-                about: 'Boost productivity.',
-                teacher: { user: { name: 'Laura' } },
-                students: [{}],
-                thumbnail: null,
-            },
-            {
-                id: 8,
-                name: 'Public Speaking',
-                about: 'Speak confidently.',
-                teacher: { user: { name: 'Robert' } },
-                students: [{}, {}],
-                thumbnail: null,
-            },
-        ],
-    }
-
+const HomePage = () => {
+    const [courses, setCourses] = useState([])
+    const [currentPage, setCurrentPage] = useState(1)
+    const coursesPerPage = 8
+    const [isVisible, setIsVisible] = useState(false)
     const [openedAdvantageId, setOpenedAdvantageId] = useState(null)
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
 
     const advantages = [
         {
@@ -123,8 +49,6 @@ function HomePage() {
     const toggleAdvantage = id => {
         setOpenedAdvantageId(prevId => (prevId === id ? null : id))
     }
-
-    const [isVisible, setIsVisible] = useState(false)
     const handleScroll = () => {
         if (window.scrollY > 300) {
             setIsVisible(true) // Show button if scrolled more than 300px
@@ -154,38 +78,58 @@ function HomePage() {
         }
     }, [])
 
+    useEffect(() => {
+        AOS.init({ duration: 1000, easing: 'ease-in-out', once: true })
+
+        const fetchCourses = async () => {
+            try {
+                const response = await getAllCourses()
+                setCourses(response.data)
+            } catch (err) {
+                setError('Failed to fetch courses.')
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fetchCourses()
+    }, [])
+
+    // Get current courses
+    const indexOfLastCourse = currentPage * coursesPerPage
+    const indexOfFirstCourse = indexOfLastCourse - coursesPerPage
+    const currentCourses = courses.slice(indexOfFirstCourse, indexOfLastCourse)
+
+    // Change page
+    const paginate = pageNumber => setCurrentPage(pageNumber)
+    if (loading) return (
+        <div className="flex justify-center items-center min-h-screen">
+            <ClipLoader size={50} color="#4fa94d" loading={loading} />
+        </div>
+    )
+    if (error) return <div>Error: {error.message}</div>
     return (
-        <div
-            className="antialiased bg-white select-none"
-            style={{ fontFamily: 'Poppins, sans-serif' }}>
+        <div className="antialiased bg-white select-none">
             <Navbar />
+
             {/* Hero Section */}
             <section className="max-w-[1200px] mx-auto p-4 py-6 lg:py-10">
                 <div
                     className="relative rounded-lg h-[400px] overflow-hidden shadow-lg"
                     data-aos="fade-right"
                     data-aos-delay="200">
-                    {/* Background Image */}
                     <img
                         src={thumbnail}
-                        alt="image by wallhaven"
+                        alt="Hero Thumbnail"
                         className="absolute inset-0 w-full h-full object-cover object-center"
                         loading="lazy"
                     />
-
-                    {/* Blur Overlay */}
                     <div className="absolute inset-0 w-3/4 bg-gradient-to-r from-blue-500 to-transparent"></div>
-
-                    {/* Content */}
                     <div className="relative flex items-center h-full">
                         <div className="p-12">
-                            <h1 className="text-4xl font-semibold mb-4 text-white">
-                                Course Program
-                            </h1>
+                            <h1 className="text-4xl font-semibold mb-4 text-white">Welcome to Our Courses</h1>
                             <p className="text-white w-3/6">
-                                Unlock your potential and build a successful
-                                career in software development through our
-                                expertly designed course.
+                                Unlock your potential and build a successful career through our expertly designed courses.
                             </p>
                         </div>
                     </div>
@@ -195,92 +139,65 @@ function HomePage() {
             {/* Courses Section */}
             <section className="max-w-[1200px] mx-auto mb-24 mt-10 p-4 py-6 lg:py-8">
                 <div className="flex justify-between mb-8">
-                    <div data-aos="fade-right">
-                        <h1 className="text-3xl text-black font-semibold">
-                            Featured Courses
-                        </h1>
-                        <p className="text-sm text-gray-600">
-                            Find the right course for you
-                        </p>
-                    </div>
-                    <Link
-                        to="/courses"
-                        className="flex items-center w-max group"
-                        data-aos="fade-left">
-                        <span className="text-xl text-blue-500">More</span>
-                        <svg
-                            className="w-6 transform transition-transform duration-300 group-hover:translate-x-1"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M9 6L15 12L9 18"
-                                stroke="#3b82f6"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"></path>
-                        </svg>
-                    </Link>
+                    <h1 className="text-3xl text-black font-semibold">Featured Courses</h1>
                 </div>
                 <div
                     className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
                     data-aos="fade-up">
-                    {categories.map(category =>
-                        coursesByCategory[category.id]?.map(course => (
-                            <div
-                                key={course.id}
-                                className="bg-white border rounded-lg p-3 hover:shadow-lg hover:-translate-y-2 transition duration-300 ease-in-out transform flex flex-col justify-between">
-                                <img
-                                    src={course.thumbnail || thumbnail}
-                                    alt={course.name}
-                                    className="w-full h-48 shadow-md object-cover rounded-lg mb-4"
-                                    loading="lazy"
-                                />
-                                <div className="flex flex-col flex-grow">
-                                    <h1 className="text-black font-semibold text-xl mb-2">
-                                        {course.name}
-                                    </h1>
-                                    <p className="text-md text-gray-600 min-h-16">
-                                        {course.about}
-                                    </p>
-                                    <div className="flex items-center justify-between mt-auto">
-                                        <div className="flex-row items-center">
-                                            <p className="ml-1 text-sm text-gray-600 mb-2">
-                                                By {course.teacher.user.name}
-                                            </p>
-                                            <div className="flex items-center">
-                                                <svg
-                                                    className="h-4 w-4 mr-2 text-gray-800"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    fill="none"
-                                                    viewBox="0 0 24 24"
-                                                    stroke="currentColor">
-                                                    <path
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        strokeWidth="2"
-                                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                                                    />
-                                                </svg>
-                                                <span className="text-xs text-gray-800">
-                                                    {course.students.length}{' '}
-                                                    Students
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <Link
-                                            to={`/details/${course.id}`}
-                                            className="text-center font-semibold bg-blue-500 text-sm hover:bg-blue-600 text-white hover:text-white px-4 py-2 rounded transition duration-300 ease-in-out w-1/2">
-                                            Learn Now
-                                        </Link>
+                    {currentCourses.map((course) => (
+                        <div
+                            key={course.id}
+                            className={`relative bg-white border rounded-lg p-3 hover:shadow-lg hover:-translate-y-2 transition duration-300 ease-in-out transform flex flex-col justify-between ${course.is_premium ? 'border-yellow-400' : ''}`}>
+                            {course.is_premium && (
+                                <div className="absolute top-0 right-0 bg-yellow-400 text-white text-xs font-bold px-2 py-1 rounded-bl-lg">
+                                    Premium
+                                </div>
+                            )}
+                            <img
+                                src={course.thumbnail || thumbnail}
+                                alt={course.title}
+                                className="w-full h-48 shadow-md object-cover rounded-lg mb-4"
+                                loading="lazy"
+                            />
+                            <div className="flex flex-col flex-grow">
+                                <h1 className="text-black font-semibold text-xl mb-2">{course.title}</h1>
+                                <p className="text-md text-gray-600 min-h-16">{course.description}</p>
+                                <div className="flex items-center justify-between mt-auto">
+                                    <div className="flex-row items-center">
+                                        <p className="ml-1 text-sm text-gray-600 mb-2">By {course.teacher?.name || 'Unknown'}</p>
+                                        <span className="text-xs text-gray-800">{course.students_count || 0} Students</span>
                                     </div>
+                                    <Link
+                                        to={`/details/${course.slug}`}
+                                        className={`text-center font-semibold text-sm px-4 py-2 rounded transition duration-300 ease-in-out w-1/2 ${course.is_premium ? 'bg-yellow-500 hover:bg-yellow-600 text-white' : 'bg-blue-500 hover:bg-blue-600 text-white'}`}>
+                                        Learn Now
+                                    </Link>
                                 </div>
                             </div>
-                        ))
-                    )}
+                        </div>
+                    ))}
+                </div>
+
+                {/* Pagination */}
+                <div className="flex justify-center mt-8">
+                    {[
+                        ...Array(
+                            Math.ceil(courses.length / coursesPerPage)
+                        ).keys(),
+                    ].map(number => (
+                        <button
+                            key={number + 1}
+                            onClick={() => paginate(number + 1)}
+                            className={`mx-1 px-3 py-2 rounded ${
+                                currentPage === number + 1
+                                    ? 'bg-blue-500 text-white'
+                                    : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+                            }`}>
+                            {number + 1}
+                        </button>
+                    ))}
                 </div>
             </section>
-
             {/* Advantages section */}
             <section className="max-w-[1200px] mx-auto p-4 py-6 lg:py-8 my-12 lg:mb-24">
                 <h1

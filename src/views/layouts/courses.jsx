@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import Navbar from '../components/Navbar'
-import Footer from '../components/Footer'
+import Navbar from '../components/navbar'
+import Footer from '../components/footer'
 import { getAllCourses, getCategories } from '../../api'
+import thumbnail from '../../assets/images/thumbnail.jpg'
+import { ClipLoader } from 'react-spinners'
 
 const CoursesPage = () => {
     const [categories, setCategories] = useState([])
@@ -64,8 +66,13 @@ const CoursesPage = () => {
         setActiveTab(categoryId)
     }
 
-    if (loading) return <p>Loading courses...</p>
-    if (error) return <p>{error}</p>
+    if (loading)
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <ClipLoader size={50} color="#4fa94d" loading={loading} />
+            </div>
+        )
+    if (error) return <div>Error: {error.message}</div>
 
     return (
         <div className="bg-white select-none">
@@ -118,12 +125,20 @@ const CoursesPage = () => {
                                 coursesByCategory[category.id].map(course => (
                                     <div
                                         key={course.id}
-                                        className="bg-white border rounded-lg p-3 hover:shadow-lg hover:-translate-y-2 transition duration-300 ease-in-out transform flex flex-col justify-between">
+                                        className={`relative bg-white border rounded-lg p-3 hover:shadow-lg hover:-translate-y-2 transition duration-300 ease-in-out transform flex flex-col justify-between ${
+                                            course.is_premium
+                                                ? 'border-yellow-400'
+                                                : ''
+                                        }`}>
+                                        {/* Premium Badge on Top-Right Corner */}
+                                        {course.is_premium && (
+                                            <div className="absolute top-0 right-0 bg-yellow-400 text-white text-xs font-bold px-2 py-1 rounded-bl-lg">
+                                                Premium
+                                            </div>
+                                        )}
+
                                         <img
-                                            src={
-                                                course.thumbnail ||
-                                                '/path/to/default-thumbnail.jpg'
-                                            }
+                                            src={course.thumbnail || thumbnail}
                                             alt={course.title}
                                             className="w-full h-48 shadow-md object-cover rounded-lg mb-4"
                                             loading="lazy"
