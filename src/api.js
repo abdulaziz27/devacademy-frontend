@@ -54,13 +54,17 @@ export const logoutUser = async () => {
   localStorage.removeItem("user");
 };
 
-export const updateUserProfile = async (name, avatar) => {
-  const formData = new FormData();
-  formData.append("name", name);
-  if (avatar) formData.append("avatar", avatar);
-  const response = await axios.post(`${API_URL}/api/profile/update`, formData, withAuth());
-  return response.data;
+export const updateUserProfile = async (updatedData) => {
+  try {
+    const response = await axios.post(`${API_URL}/api/profile/update`,  updatedData, withAuth());
+
+    return response.data;
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    throw error;
+  }
 };
+
 
 export const getUserProfile = async () => {
   const response = await axios.get(`${API_URL}/api/profile`, withAuth());
