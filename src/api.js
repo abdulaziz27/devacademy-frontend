@@ -219,11 +219,17 @@ export const getCourseProgress = async courseSlug => {
 
 // Lessons API Functions
 export const getLessons = async courseSlug => {
-    const response = await axios.get(
-        `${API_URL}/api/courses/${courseSlug}/lessons`,
-        withAuth()
-    )
-    return response.data
+    try {
+        const response = await axios.get(
+            `${API_URL}/api/courses/${courseSlug}/lessons`,
+            withAuth()
+        )
+        console.log('getLessons response:', response)
+        return response.data
+    } catch (error) {
+        console.error('Error in getLessons:', error)
+        throw error
+    }
 }
 
 export const getLessonDetails = async (courseSlug, lessonId) => {
@@ -268,10 +274,62 @@ export const deleteLesson = async (courseSlug, lessonId) => {
     return response.data
 }
 
-export const markLessonComplete = async lessonId => {
+export const markLessonComplete = async (courseSlug, lessonId) => {
     const response = await axios.post(
-        `${API_URL}/api/lessons/${lessonId}/complete`,
+        `${API_URL}/api/courses/${courseSlug}/lessons/${lessonId}/complete`,
         null,
+        withAuth()
+    )
+    return response.data
+}
+
+export const getAssignments = async courseSlug => {
+    try {
+        const response = await axios.get(
+            `${API_URL}/api/courses/${courseSlug}/assignments`,
+            withAuth()
+        )
+        console.log('getAssignments response:', response)
+        return response.data
+    } catch (error) {
+        console.error('Error in getAssignments:', error)
+        throw error
+    }
+}
+
+// Assignment submission
+export const submitAssignment = async (courseSlug, assignmentId, formData) => {
+    try {
+        const response = await axios.post(
+            `${API_URL}/api/courses/${courseSlug}/assignments/${assignmentId}/submit`,
+            formData,
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem(
+                        'accessToken'
+                    )}`,
+                    'Content-Type': 'multipart/form-data',
+                },
+            }
+        )
+        return response
+    } catch (error) {
+        console.error('API Error - submitAssignment:', error.response || error)
+        throw error
+    }
+}
+
+export const getAssignmentDetails = async (courseSlug, assignmentId) => {
+    const response = await axios.get(
+        `${API_URL}/api/courses/${courseSlug}/assignments/${assignmentId}`,
+        withAuth()
+    )
+    return response.data
+}
+
+export const getAssignmentSubmissions = async (courseSlug, assignmentId) => {
+    const response = await axios.get(
+        `${API_URL}/api/courses/${courseSlug}/assignments/${assignmentId}/submissions`,
         withAuth()
     )
     return response.data
