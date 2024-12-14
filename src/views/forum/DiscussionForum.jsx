@@ -16,6 +16,7 @@ import Swal from 'sweetalert2'
 
 const DiscussionForum = () => {
     const { user } = useAuth()
+    const isAdmin = user?.roles?.includes('admin')
     const [previewImage, setPreviewImage] = useState(null) // Track the image to preview
     const [showFullPost, setShowFullPost] = useState(false) // Track whether the full post is visible
     const [showCommentSection, setShowCommentSection] = useState(false) // Track whether the comment section is visible
@@ -347,7 +348,7 @@ const DiscussionForum = () => {
                                         ).toLocaleDateString()}
                                     </span>
                                 </div>
-                                {discussion.can_delete && (
+                                {(discussion.can_delete || isAdmin) && (
                                     <button
                                         className="text-red-500 text-sm border-none focus:outline-none rounded-lg hover:bg-gray-100 py-1 px-2 cursor-pointer ml-auto mr-4 transition duration-300"
                                         onClick={() =>
@@ -494,13 +495,13 @@ const DiscussionForum = () => {
                                                                 ).toLocaleDateString()}
                                                             </span>
                                                         </div>
-                                                        {comment.can_delete && (
+                                                        {(comment.can_delete ||
+                                                            isAdmin) && (
                                                             <button
                                                                 className="text-red-500 text-sm rounded-lg border-none focus:outline-none hover:bg-gray-100 py-1 px-2 cursor-pointer ml-auto mr-4 transition duration-300"
                                                                 onClick={() =>
                                                                     handleDeleteComment(
-                                                                        comment.id,
-                                                                        discussion.id
+                                                                        comment.id
                                                                     )
                                                                 }>
                                                                 Delete Comment
