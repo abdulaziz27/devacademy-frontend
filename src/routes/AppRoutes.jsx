@@ -17,6 +17,11 @@ import DiscussionForum from '../views/forum/DiscussionForum'
 import CourseDetail from '../views/course_detail/CourseDetail'
 import AboutUs from '../views/company_page/AboutUs'
 import ErrorPage from '../views/error_page/ErrorPage'
+import FAQPage from '../views/information_page/FAQPage'
+import TermsPage from '../views/terms_privacy/TermsPage'
+import PrivacyPage from '../views/terms_privacy/PrivacyPage'
+import HelpCenterPage from '../views/information_page/HelpCenterPage'
+import RulesRequirementsPage from '../views/information_page/RulesRequirementsPage'
 
 function AppRoutes() {
     return (
@@ -90,10 +95,15 @@ function AppRoutes() {
             <Route path="/about-us" element={<AboutUs />} />
             <Route path="/blog" element={<ErrorPage />} />
             <Route path="/program" element={<ErrorPage />} />
-            <Route path="/faq" element={<ErrorPage />} />
+            <Route path="/faq" element={<FAQPage />} />
             <Route path="/become-teacher" element={<ErrorPage />} />
-            <Route path="/rules-requirements" element={<ErrorPage />} />
-            <Route path="/help-center" element={<ErrorPage />} />
+            <Route
+                path="/rules-requirements"
+                element={<RulesRequirementsPage />}
+            />
+            <Route path="/help-center" element={<HelpCenterPage />} />
+            <Route path="/terms" element={<TermsPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
         </Routes>
     )
 }

@@ -13,6 +13,7 @@ const AboutUs = () => {
             easing: 'ease-in-out',
             once: true,
         })
+        window.scrollTo(0, 0)
     }, [])
 
     const benefits = [
@@ -113,21 +114,14 @@ const AboutUs = () => {
                         hands-on experience necessary to thrive.
                     </p>
                 </div>
-                <div className="flex flex-col w-[1200px] ml-24 text-black gap-2">
+                <div
+                    className="flex flex-col w-[1200px] ml-24 text-black gap-2"
+                    data-aos="fade-left"
+                    data-aos-delay="200">
                     {benefits.map((benefit, index) => (
                         <div
                             key={index}
-                            className="border rounded-lg h-max md:h-[120px] p-5 hover:shadow-lg hover:-translate-y-2 transition duration-300 ease-in-out"
-                            data-aos="fade-left"
-                            data-aos-delay={`${index * 200}`}
-                            data-aos-duration={
-                                index === 0
-                                    ? '500'
-                                    : index === 1
-                                    ? '1000'
-                                    : '1500'
-                            } // Different durations for each benefit
-                        >
+                            className="border rounded-lg h-max md:h-[120px] p-5 hover:shadow-lg hover:-translate-y-2 transition duration-300 ease-in-out">
                             <div className="flex flex-col lg:flex-row">
                                 <div className="mr-3 mb-2 lg:mb-0">
                                     {benefit.icon}

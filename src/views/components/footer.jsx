@@ -115,14 +115,14 @@ const Footer = () => {
                                     </li>
                                     <li class="mb-2">
                                         <Link
-                                            href="/program"
+                                            to="/program"
                                             class="text-sm font-normal hover:text-blue-500 transition duration-300 ease-in-out">
                                             Program
                                         </Link>
                                     </li>
                                     <li class="">
                                         <Link
-                                            href="/faq"
+                                            to="/faq"
                                             class="text-sm font-normal hover:text-blue-500 transition duration-300 ease-in-out">
                                             FAQ
                                         </Link>
@@ -174,21 +174,19 @@ const Footer = () => {
                             . All Rights Reserved.
                         </span>
                         <div class="flex items-center">
-                            <a
-                                href="/terms"
-                                target="_blank"
-                                class="text-sm text-gray-500 text-center hover:underline">
+                            <Link
+                                to="/terms"
+                                class="text-sm text-blue-500 text-center hover:underline">
                                 Terms
-                            </a>
-                            <span class="mx-2 text-gray-500 text-center">
+                            </Link>
+                            <span class="mx-2 text-gray-800 text-center">
                                 •
                             </span>
-                            <a
-                                href="/privacy"
-                                target="_blank"
-                                class="text-sm text-gray-500 text-center hover:underline">
+                            <Link
+                                to="/privacy"
+                                class="text-sm text-blue-600 text-center hover:underline">
                                 Privacy
-                            </a>
+                            </Link>
                         </div>
                     </div>
                 </div>
