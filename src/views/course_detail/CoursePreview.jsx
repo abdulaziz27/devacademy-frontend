@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import { useParams, Link, useNavigate } from 'react-router-dom'
-import { enrollInCourse, getCourseDetails } from '../../api'
+import { useParams, useNavigate } from 'react-router-dom'
+import {
+    enrollInCourse,
+    getCourseDetails,
+    getSubscriptionStatus,
+} from '../../api'
 import { useAuth } from '../../contexts/AuthContext'
 import Swal from 'sweetalert2'
 import Navbar from '../components/Navbar'
-import Footer from '../components/Footer'
+import Footer from '../components/footer'
 
 const CoursePreview = () => {
     const { slug } = useParams()
@@ -14,17 +18,18 @@ const CoursePreview = () => {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
     const [enrolling, setEnrolling] = useState(false)
-    const [isEnrolled, setIsEnrolled] = useState(false)
+    const [subscriptionStatus, setSubscriptionStatus] = useState(null)
 
     useEffect(() => {
-        const fetchCourse = async () => {
+        const fetchData = async () => {
             try {
-                const response = await getCourseDetails(slug)
-                setCourse(response.data)
-
-                if (response.data.is_enrolled) {
-                    setIsEnrolled(true)
-                }
+                const [courseResponse, subscriptionResponse] =
+                    await Promise.all([
+                        getCourseDetails(slug),
+                        getSubscriptionStatus(),
+                    ])
+                setCourse(courseResponse.data)
+                setSubscriptionStatus(subscriptionResponse)
             } catch (err) {
                 setError(err.message)
             } finally {
@@ -32,27 +37,39 @@ const CoursePreview = () => {
             }
         }
 
-        fetchCourse()
+        fetchData()
     }, [slug])
 
     const handleEnrollment = async () => {
-        if (isEnrolled) {
+        if (!user) {
+            navigate('/login', { state: { from: `/courses/${slug}` } })
+            return
+        }
+
+        if (course.is_enrolled) {
             navigate(`/learn/courses/${slug}`)
             return
         }
 
-        if (!user) {
-            // Jika belum login, arahkan ke halaman login
-            navigate('/login', { state: { from: `/courses/${slug}` } })
+        if (course.is_premium && !subscriptionStatus.can_access_premium) {
+            Swal.fire({
+                icon: 'info',
+                title: 'Subscription Required',
+                text: 'This is a premium course. Please subscribe to access this content.',
+                showCancelButton: true,
+                confirmButtonText: 'View Plans',
+                cancelButtonText: 'Later',
+            }).then(result => {
+                if (result.isConfirmed) {
+                    navigate('/pricing')
+                }
+            })
             return
         }
 
         setEnrolling(true)
         try {
-            // Mencoba untuk enroll
             await enrollInCourse(slug)
-
-            // Jika berhasil, arahkan ke halaman course content
             Swal.fire({
                 icon: 'success',
                 title: 'Enrolled Successfully!',
@@ -60,31 +77,14 @@ const CoursePreview = () => {
                 showConfirmButton: false,
                 timer: 1500,
             }).then(() => {
-                setIsEnrolled(true)
                 navigate(`/learn/courses/${slug}`)
             })
         } catch (error) {
-            if (error.message === 'subscription_required') {
-                // Jika course premium dan belum subscribe
-                Swal.fire({
-                    icon: 'info',
-                    title: 'Subscription Required',
-                    text: 'This is a premium course. Please subscribe to access this content.',
-                    showCancelButton: true,
-                    confirmButtonText: 'View Plans',
-                    cancelButtonText: 'Later',
-                }).then(result => {
-                    if (result.isConfirmed) {
-                        navigate('/pricing')
-                    }
-                })
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Enrollment Failed',
-                    text: 'An error occurred while enrolling in the course.',
-                })
-            }
+            Swal.fire({
+                icon: 'error',
+                title: 'Enrollment Failed',
+                text: 'An error occurred while enrolling in the course.',
+            })
         } finally {
             setEnrolling(false)
         }
@@ -192,21 +192,23 @@ const CoursePreview = () => {
                                 </div>
                             )}
 
+                            {/* Enroll Button */}
                             <button
                                 onClick={handleEnrollment}
-                                disabled={enrolling || isEnrolled}
+                                disabled={enrolling}
                                 className={`w-full ${
-                                    enrolling || isEnrolled
+                                    enrolling
                                         ? 'bg-gray-400'
                                         : 'bg-blue-600 hover:bg-blue-700'
                                 } text-white rounded-lg py-3 px-4 font-semibold transition duration-300`}>
                                 {enrolling
                                     ? 'Processing...'
-                                    : isEnrolled
+                                    : course.is_enrolled
                                     ? 'Continue Learning'
-                                    : course?.is_premium
-                                    ? 'Enroll Premium Course'
-                                    : 'Enroll Free Course'}
+                                    : course.is_premium &&
+                                      !subscriptionStatus.can_access_premium
+                                    ? 'Subscribe to Enroll'
+                                    : 'Enroll in Course'}
                             </button>
 
                             {/* Course Stats */}
