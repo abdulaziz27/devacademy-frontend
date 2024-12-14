@@ -340,3 +340,11 @@ export const getAdminDashboardData = async () => {
     )
     return response.data
 }
+
+export const getSubscriptionStatus = async () => {
+    const response = await axios.get(
+        `${API_URL}/api/subscription/status`,
+        withAuth()
+    )
+    return response.data
+}
