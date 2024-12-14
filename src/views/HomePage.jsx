@@ -186,12 +186,8 @@ const HomePage = () => {
                                         </span>
                                     </div>
                                     <Link
-                                        to={`/details/${course.slug}`}
-                                        className={`text-center font-semibold text-sm px-4 py-2 rounded transition duration-300 ease-in-out w-1/2 ${
-                                            course.is_premium
-                                                ? 'bg-yellow-500 hover:bg-yellow-600 text-white'
-                                                : 'bg-blue-500 hover:bg-blue-600 text-white'
-                                        }`}>
+                                        to={`/courses/${course.slug}`}
+                                        className="text-center bg-blue-500 hover:bg-blue-600 text-white font-semibold text-sm hover:text-white border-none focus:outline-none px-4 py-2 rounded transition duration-300 ease-in-out w-1/2">
                                         Learn Now
                                     </Link>
                                 </div>
@@ -210,16 +206,17 @@ const HomePage = () => {
                         <button
                             key={number + 1}
                             onClick={() => paginate(number + 1)}
-                            className={`mx-1 px-3 py-2 rounded ${
+                            className={`mx-1 px-3 py-2 font-medium rounded hover:text-white hover:bg-blue-500 focus:outline-none border-none transition duration-300 ${
                                 currentPage === number + 1
                                     ? 'bg-blue-500 text-white'
-                                    : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+                                    : 'bg-gray-200 text-gray-800'
                             }`}>
                             {number + 1}
                         </button>
                     ))}
                 </div>
             </section>
+
             {/* Advantages section */}
             <section className="max-w-[1200px] mx-auto p-4 py-6 lg:py-8 my-12 lg:mb-24">
                 <h1

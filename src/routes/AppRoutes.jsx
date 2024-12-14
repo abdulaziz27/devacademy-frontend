@@ -14,6 +14,7 @@ import UserCourses from '../views/layouts/UserCourses'
 import CoursePreview from '../views/course_detail/CoursePreview'
 import CourseContent from '../views/course_detail/CourseContent'
 import DiscussionForum from '../views/forum/DiscussionForum'
+import CourseDetail from '../views/course_detail/CourseDetail'
 
 function AppRoutes() {
     return (
@@ -37,13 +38,14 @@ function AppRoutes() {
 
             {/* Learning Routes - Protected */}
             <Route
-                path="/learn/courses/:slug"
+                path="/*"
                 element={
                     <ProtectedRoute>
-                        <CourseContent />
+                        <CourseDetail />
                     </ProtectedRoute>
-                }
-            />
+                }>
+                <Route path="learn/courses/:slug" element={<CourseContent />} />
+            </Route>
 
             {/* Dashboard Routes */}
             <Route
