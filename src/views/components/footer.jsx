@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 const Footer = () => {
     return (
@@ -72,17 +73,16 @@ const Footer = () => {
                         {/* Quick Links */}
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-12">
                             <div>
-                                <h2 class="mt-1 mb-4 text-sm font-semibold text-gray-900 uppercase">
+                                <h2 class="mt-1 mb-4 text-base font-semibold text-gray-900 uppercase">
                                     Company
                                 </h2>
                                 <ul class="text-gray-500">
                                     <li class="mb-2">
-                                        <a
-                                            href="/about-us"
-                                            target="_blank"
+                                        <Link
+                                            to="/about-us"
                                             class="text-sm font-normal hover:text-blue-500 transition duration-300 ease-in-out">
                                             About Us
-                                        </a>
+                                        </Link>
                                     </li>
                                     <li class="mb-2">
                                         <a
@@ -93,43 +93,39 @@ const Footer = () => {
                                         </a>
                                     </li>
                                     <li>
-                                        <a
-                                            href="/course"
-                                            target="_blank"
+                                        <Link
+                                            to="/courses"
                                             class="text-sm font-normal hover:text-blue-500 transition duration-300 ease-in-out">
                                             Our Course
-                                        </a>
+                                        </Link>
                                     </li>
                                 </ul>
                             </div>
                             <div>
-                                <h2 class="mt-1 mb-4 text-sm font-semibold text-gray-900 uppercase">
+                                <h2 class="mt-1 mb-4 text-base font-semibold text-gray-900 uppercase">
                                     Information
                                 </h2>
                                 <ul class="text-gray-500">
                                     <li class="mb-2">
-                                        <a
-                                            href="/blog"
-                                            target="_blank"
+                                        <Link
+                                            to="/blog"
                                             class="text-sm font-normal hover:text-blue-500 transition duration-300 ease-in-out">
                                             Blog
-                                        </a>
+                                        </Link>
                                     </li>
                                     <li class="mb-2">
-                                        <a
+                                        <Link
                                             href="/program"
-                                            target="_blank"
                                             class="text-sm font-normal hover:text-blue-500 transition duration-300 ease-in-out">
                                             Program
-                                        </a>
+                                        </Link>
                                     </li>
                                     <li class="">
-                                        <a
+                                        <Link
                                             href="/faq"
-                                            target="_blank"
                                             class="text-sm font-normal hover:text-blue-500 transition duration-300 ease-in-out">
                                             FAQ
-                                        </a>
+                                        </Link>
                                     </li>
                                 </ul>
                             </div>
@@ -139,28 +135,25 @@ const Footer = () => {
                                 </h2>
                                 <ul class="text-gray-500">
                                     <li class="mb-2">
-                                        <a
-                                            href="/become-teacher"
-                                            target="_blank"
+                                        <Link
+                                            to="/become-teacher"
                                             class="text-sm font-normal hover:text-blue-500 transition duration-300 ease-in-out">
                                             Become a Teacher
-                                        </a>
+                                        </Link>
                                     </li>
                                     <li class="mb-2">
-                                        <a
-                                            href="/rules-requirements"
-                                            target="_blank"
+                                        <Link
+                                            to="/rules-requirements"
                                             class="text-sm font-normal hover:text-blue-500 transition duration-300 ease-in-out">
                                             Rules & Requirements
-                                        </a>
+                                        </Link>
                                     </li>
                                     <li class="">
-                                        <a
-                                            href="/help-center"
-                                            target="_blank"
+                                        <Link
+                                            to="/help-center"
                                             class="text-sm font-normal hover:text-blue-500 transition duration-300 ease-in-out">
                                             Help Center
-                                        </a>
+                                        </Link>
                                     </li>
                                 </ul>
                             </div>

@@ -15,6 +15,8 @@ import CoursePreview from '../views/course_detail/CoursePreview'
 import CourseContent from '../views/course_detail/CourseContent'
 import DiscussionForum from '../views/forum/DiscussionForum'
 import CourseDetail from '../views/course_detail/CourseDetail'
+import AboutUs from '../views/company_page/AboutUs'
+import ErrorPage from '../views/error_page/ErrorPage'
 
 function AppRoutes() {
     return (
@@ -83,6 +85,15 @@ function AppRoutes() {
                 {/* Add teacher routes here */}
             </Route>
             <Route path="/discussion-forum" element={<DiscussionForum />} />
+
+            {/* Admin Routes */}
+            <Route path="/about-us" element={<AboutUs />} />
+            <Route path="/blog" element={<ErrorPage />} />
+            <Route path="/program" element={<ErrorPage />} />
+            <Route path="/faq" element={<ErrorPage />} />
+            <Route path="/become-teacher" element={<ErrorPage />} />
+            <Route path="/rules-requirements" element={<ErrorPage />} />
+            <Route path="/help-center" element={<ErrorPage />} />
         </Routes>
     )
 }
