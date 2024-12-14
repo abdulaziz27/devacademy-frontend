@@ -231,7 +231,10 @@ const CoursePreview = () => {
                                 className="aspect-video rounded-lg overflow-hidden w-full h-full relative">
                                 <iframe
                                     className="w-full h-full overflow-hidden"
-                                    src="https://www.youtube.com/embed/3iM_06QeZi8"
+                                    src={
+                                        course.trailer_url ||
+                                        'https://www.youtube.com/embed/3iM_06QeZi8'
+                                    }
                                     frameBorder="0"
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
                                     allowFullScreen
@@ -242,36 +245,34 @@ const CoursePreview = () => {
                             <div className="rounded-lg border text-gray-800 font-medium w-full px-4 flex flex-col">
                                 <div className="flex justify-between py-4">
                                     <h1 className="max-w-[250px] leading-relaxed">
-                                        Introduction
+                                        Sylabus
                                     </h1>
                                 </div>
                                 <div>
                                     {/* Mock course videos */}
-                                    <div className="flex justify-between items-center py-4 border-t border-gray-200">
-                                        <h1 className="max-w-[250px] leading-relaxed">
-                                            Lesson 1: iOS Development with Swift
-                                        </h1>
-                                    </div>
-                                    <div className="flex justify-between items-center py-4 border-t border-gray-200">
-                                        <h1 className="max-w-[250px] leading-relaxed">
-                                            Lesson 2: iOS Development with Swift
-                                        </h1>
-                                    </div>
-                                    <div className="flex justify-between items-center py-4 border-t border-gray-200">
-                                        <h1 className="max-w-[250px] leading-relaxed">
-                                            Lesson 3: iOS Development with Swift
-                                        </h1>
-                                    </div>
-                                    <div className="flex justify-between items-center py-4 border-t border-gray-200">
-                                        <h1 className="max-w-[250px] leading-relaxed">
-                                            Lesson 4: iOS Development with Swift
-                                        </h1>
-                                    </div>
-                                    <div className="flex justify-between items-center py-4 border-t border-gray-200">
-                                        <h1 className="max-w-[250px] leading-relaxed">
-                                            Lesson 5: iOS Development with Swift
-                                        </h1>
-                                    </div>
+                                    {/* Tampilkan List Nama Lesson dari course ini */}
+                                    {course.lessons.map(lesson => (
+                                        <div
+                                            key={lesson.id}
+                                            className="flex justify-between items-center py-4 border-t border-gray-200">
+                                            <h1 className="max-w-[250px] leading-relaxed">
+                                                {lesson.title}
+                                                {/* Show duration if available */}
+                                                {/* {lesson.duration && (
+                                                    <span className="text-xs text-gray-500 ml-2">
+                                                        {lesson.duration} min
+                                                    </span>
+                                                )} */}
+                                            </h1>
+                                            {/* Show icon based on lesson type */}
+                                            {lesson.type === 'video' && (
+                                                <svg
+                                                    className="w-5 h-5 text-gray-500" // Add video icon
+                                                    // ... icon SVG code
+                                                />
+                                            )}
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
                         </div>
@@ -309,24 +310,14 @@ const CoursePreview = () => {
                 <section className="max-w-[1200px] mx-auto p-4 py-6 lg:py-8">
                     <div className="flex flex-col-reverse lg:flex-row gap-8">
                         {/* Left Section */}
+                        {/* Tampilkan Deskripsi Course dari api */}
                         <div className="w-full text-black lg:w-8/12">
                             <h1 className="text-2xl font-semibold mb-4">
                                 Description
                             </h1>
                             <p className="text-gray-600 leading-10 text-justify">
-                                Lorem ipsum dolor sit amet consectetur
-                                adipisicing elit. Cupiditate veritatis eaque in
-                                maxime repudiandae incidunt non ex vero, veniam,
-                                obcaecati accusamus, sint doloribus officiis! Ea
-                                ullam est distinctio sapiente reprehenderit
-                                dolor animi facere ipsum debitis eos saepe
-                                itaque mollitia aperiam nesciunt magni
-                                inventore, fugit, eveniet velit nostrum harum
-                                ratione. Laboriosam? Lorem ipsum dolor sit amet
-                                consectetur. Lorem ipsum dolor sit, amet
-                                consectetur adipisicing elit. Maxime, itaque!
+                                {course.description}
                             </p>
-
                             <h1 className="text-2xl font-semibold mt-12 mb-4">
                                 Teacher
                             </h1>
@@ -334,8 +325,11 @@ const CoursePreview = () => {
                                 <div className="flex-shrink-0 h-10 w-10">
                                     <img
                                         className="h-10 w-10 object-cover rounded-full"
-                                        src="https://via.placeholder.com/150"
-                                        alt="User Avatar"
+                                        src={
+                                            course.teacher.avatar ||
+                                            'https://via.placeholder.com/150'
+                                        }
+                                        alt={`${course.teacher.name}'s avatar`}
                                         loading="lazy"
                                     />
                                 </div>
@@ -354,34 +348,31 @@ const CoursePreview = () => {
                             </div>
                             <div className="rounded-lg border w-full px-4 flex flex-col mb-12">
                                 <div className="flex justify-between py-4">
-                                    <h1>Introduction</h1>
+                                    <h1>Sylabus</h1>
                                 </div>
                                 <div>
-                                    <div className="flex justify-between items-center py-4 border-t border-gray-200">
-                                        <h1 className="max-w-[400px] leading-relaxed">
-                                            Lesson 1: iOS Development with Swift
-                                        </h1>
-                                    </div>
-                                    <div className="flex justify-between items-center py-4 border-t border-gray-200">
-                                        <h1 className="max-w-[400px] leading-relaxed">
-                                            Lesson 2: iOS Development with Swift
-                                        </h1>
-                                    </div>
-                                    <div className="flex justify-between items-center py-4 border-t border-gray-200">
-                                        <h1 className="max-w-[400px] leading-relaxed">
-                                            Lesson 3: iOS Development with Swift
-                                        </h1>
-                                    </div>
-                                    <div className="flex justify-between items-center py-4 border-t border-gray-200">
-                                        <h1 className="max-w-[400px] leading-relaxed">
-                                            Lesson 4: iOS Development with Swift
-                                        </h1>
-                                    </div>
-                                    <div className="flex justify-between items-center py-4 border-t border-gray-200">
-                                        <h1 className="max-w-[400px] leading-relaxed">
-                                            Lesson 5: iOS Development with Swift
-                                        </h1>
-                                    </div>
+                                    {course.lessons.map(lesson => (
+                                        <div
+                                            key={lesson.id}
+                                            className="flex justify-between items-center py-4 border-t border-gray-200">
+                                            <h1 className="max-w-[400px] leading-relaxed">
+                                                {lesson.title}
+                                                {/* Show duration if available */}
+                                                {/* {lesson.duration && (
+                                                    <span className="text-xs text-gray-500 ml-2">
+                                                        {lesson.duration} min
+                                                    </span>
+                                                )} */}
+                                            </h1>
+                                            {/* Show icon based on lesson type */}
+                                            {lesson.type === 'video' && (
+                                                <svg
+                                                    className="w-5 h-5 text-gray-500" // Add video icon
+                                                    // ... icon SVG code
+                                                />
+                                            )}
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
                         </div>
@@ -394,7 +385,10 @@ const CoursePreview = () => {
                                         {/* Placeholder for video preview */}
                                         <iframe
                                             className="w-full h-full overflow-hidden"
-                                            src="https://www.youtube.com/embed/3iM_06QeZi8"
+                                            src={
+                                                course.trailer_url ||
+                                                'https://www.youtube.com/embed/3iM_06QeZi8'
+                                            }
                                             frameBorder="0"
                                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
                                             allowFullScreen
@@ -404,6 +398,8 @@ const CoursePreview = () => {
                                     <div className="py-2">
                                         <hr />
                                     </div>
+                                    {/* Tambahkan pengkondisian lain, jika sudah di enroll (is_enrolled true) maka teksnya berubah Continue Learning*/}
+
                                     <button
                                         onClick={handleEnrollment}
                                         disabled={enrolling}
@@ -417,10 +413,15 @@ const CoursePreview = () => {
                                             : course.is_enrolled
                                             ? 'Continue Learning'
                                             : course.is_premium &&
-                                              !subscriptionStatus.can_access_premium
+                                              !subscriptionStatus?.can_access_premium
                                             ? 'Subscribe to Enroll'
                                             : 'Enroll in Course'}
                                     </button>
+                                    {course.is_premium && (
+                                        <div className="absolute top-0 right-0 bg-yellow-400 text-white text-xs font-bold px-2 py-1 rounded-bl-lg">
+                                            Premium
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
