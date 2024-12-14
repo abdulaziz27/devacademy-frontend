@@ -23,13 +23,19 @@ const CoursePreview = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [courseResponse, subscriptionResponse] =
-                    await Promise.all([
-                        getCourseDetails(slug),
-                        getSubscriptionStatus(),
-                    ])
-                setCourse(courseResponse.data)
-                setSubscriptionStatus(subscriptionResponse)
+                if (user) {
+                    const [courseResponse, subscriptionResponse] =
+                        await Promise.all([
+                            getCourseDetails(slug),
+                            getSubscriptionStatus(),
+                        ])
+                    setCourse(courseResponse.data)
+                    setSubscriptionStatus(subscriptionResponse)
+                } else {
+                    // If not logged in, only fetch course details
+                    const courseResponse = await getCourseDetails(slug)
+                    setCourse(courseResponse.data)
+                }
             } catch (err) {
                 setError(err.message)
             } finally {
@@ -38,7 +44,7 @@ const CoursePreview = () => {
         }
 
         fetchData()
-    }, [slug])
+    }, [slug, user])
 
     const handleEnrollment = async () => {
         if (!user) {
@@ -51,7 +57,12 @@ const CoursePreview = () => {
             return
         }
 
-        if (course.is_premium && !subscriptionStatus.can_access_premium) {
+        // Only check subscription status if user is logged in
+        if (
+            user &&
+            course.is_premium &&
+            !subscriptionStatus?.can_access_premium
+        ) {
             Swal.fire({
                 icon: 'info',
                 title: 'Subscription Required',
@@ -88,6 +99,19 @@ const CoursePreview = () => {
         } finally {
             setEnrolling(false)
         }
+    }
+
+    const getEnrollButtonText = () => {
+        if (enrolling) return 'Processing...'
+        if (course.is_enrolled) return 'Continue Learning'
+        if (!user && course.is_premium) return 'Login to Enroll'
+        if (
+            user &&
+            course.is_premium &&
+            !subscriptionStatus?.can_access_premium
+        )
+            return 'Subscribe to Enroll'
+        return 'Enroll in Course'
     }
 
     if (loading) return <div>Loading...</div>
@@ -398,7 +422,6 @@ const CoursePreview = () => {
                                     <div className="py-2">
                                         <hr />
                                     </div>
-                                    {/* Tambahkan pengkondisian lain, jika sudah di enroll (is_enrolled true) maka teksnya berubah Continue Learning*/}
 
                                     <button
                                         onClick={handleEnrollment}
@@ -408,20 +431,8 @@ const CoursePreview = () => {
                                                 ? 'bg-gray-400'
                                                 : 'bg-blue-600 hover:bg-blue-700'
                                         } text-white rounded-lg py-3 px-4 font-semibold transition duration-300`}>
-                                        {enrolling
-                                            ? 'Processing...'
-                                            : course.is_enrolled
-                                            ? 'Continue Learning'
-                                            : course.is_premium &&
-                                              !subscriptionStatus?.can_access_premium
-                                            ? 'Subscribe to Enroll'
-                                            : 'Enroll in Course'}
+                                        {getEnrollButtonText()}
                                     </button>
-                                    {course.is_premium && (
-                                        <div className="absolute top-0 right-0 bg-yellow-400 text-white text-xs font-bold px-2 py-1 rounded-bl-lg">
-                                            Premium
-                                        </div>
-                                    )}
                                 </div>
                             </div>
                         </div>
