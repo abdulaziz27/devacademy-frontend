@@ -113,8 +113,11 @@ export const getCategories = async () => {
 }
 
 // Courses API Functions
-export const getAllCourses = async (page) => {
-    const response = await axios.get(`${API_URL}/api/courses?page=${page}`, withAuth())
+export const getAllCourses = async page => {
+    const response = await axios.get(
+        `${API_URL}/api/courses?page=${page}`,
+        withAuth()
+    )
     return response.data
 }
 
@@ -142,31 +145,32 @@ export const getPremiumCourses = async () => {
     return response.data
 }
 
-export const createCourse = async (courseData) => {
-    const formData = new FormData();
+export const createCourse = async courseData => {
+    const formData = new FormData()
 
     // Convert is_premium to 0 or 1
-    formData.append("is_premium", courseData.is_premium ? "1" : "0");
+    formData.append('is_premium', courseData.is_premium ? '1' : '0')
 
     // Menambahkan data lainnya ke formData
-    Object.keys(courseData).forEach((key) => {
-        if (key !== "is_premium") {  // Jangan menambah is_premium lagi ke formData
-            formData.append(key, courseData[key]);
+    Object.keys(courseData).forEach(key => {
+        if (key !== 'is_premium') {
+            // Jangan menambah is_premium lagi ke formData
+            formData.append(key, courseData[key])
         }
-    });
+    })
 
     try {
         const response = await axios.post(
             `${API_URL}/api/courses`,
             formData,
             withAuth() // Pastikan Anda mengirim header autentikasi jika perlu
-        );
-        return response.data;
+        )
+        return response.data
     } catch (error) {
-        console.error("Error in createCourse:", error.response);
-        throw error; // Bisa menambah penanganan error lebih lanjut di sini
+        console.error('Error in createCourse:', error.response)
+        throw error // Bisa menambah penanganan error lebih lanjut di sini
     }
-};
+}
 
 export const updateCourse = async (slug, courseData) => {
     const formData = new FormData()
@@ -415,6 +419,96 @@ export const getAdminDashboardData = async () => {
 export const getSubscriptionStatus = async () => {
     const response = await axios.get(
         `${API_URL}/api/subscription/status`,
+        withAuth()
+    )
+    return response.data
+}
+
+// Get all discussions
+export const getDiscussions = async () => {
+    const response = await axios.get(`${API_URL}/api/discussions`, withAuth())
+    return response.data
+}
+
+// Get single discussion with comments
+export const getDiscussion = async id => {
+    const response = await axios.get(
+        `${API_URL}/api/discussions/${id}`,
+        withAuth()
+    )
+    return response.data
+}
+
+// Create new discussion
+export const createDiscussion = async formData => {
+    const response = await axios.post(`${API_URL}/api/discussions`, formData, {
+        headers: {
+            ...withAuth().headers,
+            'Content-Type': 'multipart/form-data',
+        },
+    })
+    return response.data
+}
+
+// Update discussion
+export const updateDiscussion = async (id, formData) => {
+    const response = await axios.post(
+        `${API_URL}/api/discussions/${id}`,
+        {
+            _method: 'PUT',
+            ...formData,
+        },
+        {
+            headers: {
+                ...withAuth().headers,
+                'Content-Type': 'multipart/form-data',
+            },
+        }
+    )
+    return response.data
+}
+
+// Delete discussion
+export const deleteDiscussion = async id => {
+    const response = await axios.delete(
+        `${API_URL}/api/discussions/${id}`,
+        withAuth()
+    )
+    return response.data
+}
+
+// Create comment
+export const createComment = async (discussionId, content) => {
+    const response = await axios.post(
+        `${API_URL}/api/discussions/${discussionId}/comments`,
+        { content },
+        withAuth()
+    )
+    return response.data
+}
+
+// Update comment
+export const updateComment = async (commentId, content) => {
+    const response = await axios.put(
+        `${API_URL}/api/comments/${commentId}`,
+        { content },
+        withAuth()
+    )
+    return response.data
+}
+
+// Delete comment
+export const deleteComment = async commentId => {
+    const response = await axios.delete(
+        `${API_URL}/api/comments/${commentId}`,
+        withAuth()
+    )
+    return response.data
+}
+
+export const getDiscussionComments = async discussionId => {
+    const response = await axios.get(
+        `${API_URL}/api/discussions/${discussionId}/comments`,
         withAuth()
     )
     return response.data
