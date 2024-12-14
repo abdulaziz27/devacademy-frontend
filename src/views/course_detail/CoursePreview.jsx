@@ -140,7 +140,7 @@ const CoursePreview = () => {
     ]
 
     return (
-        <div className="bg-white">
+        <div className="bg-white select-none">
             <Navbar />
             <div className="py-12 bg-white">
                 <div className="max-w-7xl mx-auto p-4 sm:px-6 lg:px-8">
