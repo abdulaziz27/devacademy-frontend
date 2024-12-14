@@ -113,8 +113,8 @@ export const getCategories = async () => {
 }
 
 // Courses API Functions
-export const getAllCourses = async () => {
-    const response = await axios.get(`${API_URL}/api/courses`, withAuth())
+export const getAllCourses = async (page) => {
+    const response = await axios.get(`${API_URL}/api/courses?page=${page}`, withAuth())
     return response.data
 }
 
@@ -142,18 +142,31 @@ export const getPremiumCourses = async () => {
     return response.data
 }
 
-export const createCourse = async courseData => {
-    const formData = new FormData()
-    Object.keys(courseData).forEach(key => {
-        formData.append(key, courseData[key])
-    })
-    const response = await axios.post(
-        `${API_URL}/api/courses`,
-        formData,
-        withAuth()
-    )
-    return response.data
-}
+export const createCourse = async (courseData) => {
+    const formData = new FormData();
+
+    // Convert is_premium to 0 or 1
+    formData.append("is_premium", courseData.is_premium ? "1" : "0");
+
+    // Menambahkan data lainnya ke formData
+    Object.keys(courseData).forEach((key) => {
+        if (key !== "is_premium") {  // Jangan menambah is_premium lagi ke formData
+            formData.append(key, courseData[key]);
+        }
+    });
+
+    try {
+        const response = await axios.post(
+            `${API_URL}/api/courses`,
+            formData,
+            withAuth() // Pastikan Anda mengirim header autentikasi jika perlu
+        );
+        return response.data;
+    } catch (error) {
+        console.error("Error in createCourse:", error.response);
+        throw error; // Bisa menambah penanganan error lebih lanjut di sini
+    }
+};
 
 export const updateCourse = async (slug, courseData) => {
     const formData = new FormData()
