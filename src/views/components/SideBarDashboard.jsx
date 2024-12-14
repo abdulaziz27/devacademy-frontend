@@ -1,14 +1,35 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
+import { getUserProfile } from '../../api'
 
 const Sidebar = () => {
     const [open, setOpen] = useState(false)
+    const [userRole, setUserRole] = useState(null)
+
+    useEffect(() => {
+        const fetchUserRole = async () => {
+            try {
+                const profileResponse = await getUserProfile()
+                const roles = profileResponse.data.roles
+                const role = roles.includes('admin')
+                    ? 'admin'
+                    : roles.includes('teacher')
+                    ? 'teacher'
+                    : 'student'
+                setUserRole(role)
+            } catch (error) {
+                console.error('Failed to fetch user profile:', error)
+            }
+        }
+
+        fetchUserRole()
+    }, [])
 
     const menuItems = [
         {
             name: 'Dashboard',
             path: '/dashboard',
-            roles: ['owner', 'teacher'],
+            roles: ['admin', 'teacher', 'student'],
             icon: (
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -28,7 +49,7 @@ const Sidebar = () => {
         {
             name: 'Teachers',
             path: '/admin/teachers',
-            roles: ['owner'],
+            roles: ['admin'],
             icon: (
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -48,7 +69,7 @@ const Sidebar = () => {
         {
             name: 'Categories',
             path: '/admin/categories',
-            roles: ['owner'],
+            roles: ['admin'],
             icon: (
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -68,7 +89,7 @@ const Sidebar = () => {
         {
             name: 'Courses',
             path: '/user-courses',
-            roles: ['owner', 'teacher'],
+            roles: ['admin', 'teacher', 'student'],
             icon: (
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -76,9 +97,9 @@ const Sidebar = () => {
                     stroke="currentColor"
                     className="h-5 w-5 mr-3"
                     fill="none"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round">
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6z" />
                     <path d="M14 3v5h5M16 13H8M16 17H8M10 9H8" />
                 </svg>
@@ -87,7 +108,7 @@ const Sidebar = () => {
         {
             name: 'Transactions',
             path: '/subscribe_transactions',
-            roles: ['owner'],
+            roles: ['admin'],
             icon: (
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -107,7 +128,7 @@ const Sidebar = () => {
         {
             name: 'Profile',
             path: '/profile',
-            roles: ['owner', 'teacher'],
+            roles: ['admin', 'teacher', 'student'],
             icon: (
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -115,9 +136,9 @@ const Sidebar = () => {
                     stroke="currentColor"
                     className="h-5 w-5 mr-3"
                     fill="none"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round">
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round">
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                     <circle cx="12" cy="7" r="4"></circle>
                 </svg>
@@ -126,7 +147,7 @@ const Sidebar = () => {
         {
             name: 'Settings',
             path: '/settings',
-            roles: ['owner', 'teacher'],
+            roles: ['admin', 'teacher','student'],
             icon: (
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -134,18 +155,15 @@ const Sidebar = () => {
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round">
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round">
                     <circle cx="12" cy="12" r="3"></circle>
                     <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
                 </svg>
             ),
         },
     ]
-
-    const userRole = 'teacher' // Example: Replace with logic to fetch the user's role.
-
     return (
         <>
             {/* Sidebar for larger screens */}
@@ -195,9 +213,9 @@ const Sidebar = () => {
                                     stroke="currentColor"
                                     className="h-5 w-5 mr-3"
                                     fill="none"
-                                    stroke-width="2"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round">
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round">
                                     <path d="M10 3H6a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h4M16 17l5-5-5-5M19.8 12H9" />
                                 </svg>
                                 <span>Log Out</span>
