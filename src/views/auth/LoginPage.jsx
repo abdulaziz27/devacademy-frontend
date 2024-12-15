@@ -22,13 +22,12 @@ function LoginPage() {
             const result = await loginUser(email, password)
 
             if (result?.token) {
-                localStorage.setItem('accessToken', result.token)
-
-                axios.defaults.headers.common[
-                    'Authorization'
-                ] = `Bearer ${result.token}`
-
+                // Token is already stored in localStorage and axios headers by loginUser function
                 swal('Success!', 'Login berhasil!', 'success').then(() => {
+                    // Trigger a re-render or update of the auth state
+                    // This depends on how you're managing auth state in your app
+                    // For example, if you're using a context:
+                    // updateAuthState(result.user);
                     navigate('/')
                 })
             } else {
@@ -43,6 +42,16 @@ function LoginPage() {
             console.error('Error during login:', error)
         }
     }
+
+    useEffect(() => {
+        const token = localStorage.getItem('accessToken')
+        if (token) {
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+            // Optionally, verify the token here
+            // You might want to add a function in your API to verify the token
+            // verifyToken().then(() => navigate('/'))
+        }
+    }, [])
 
     useEffect(() => {
         const link = document.createElement('link')

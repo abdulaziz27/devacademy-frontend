@@ -37,16 +37,22 @@ export const loginWithGoogle = async googleAccessToken => {
 
 // User API Functions
 export const loginUser = async (email, password) => {
-    const response = await axios.post(`${API_URL}/api/login`, {
-        email,
-        password,
-    })
-    const { token, user } = response.data
-    if (token) {
-        localStorage.setItem('accessToken', token)
-        localStorage.setItem('user', JSON.stringify(user))
+    try {
+        const response = await axios.post(`${API_URL}/api/login`, {
+            email,
+            password,
+        })
+        const { token, user } = response.data
+        if (token) {
+            localStorage.setItem('accessToken', token)
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+            localStorage.setItem('user', JSON.stringify(user))
+        }
+        return response.data
+    } catch (error) {
+        console.error('Login error:', error)
+        throw error
     }
-    return response.data
 }
 
 export const loginAdmin = async (email, password) => {
