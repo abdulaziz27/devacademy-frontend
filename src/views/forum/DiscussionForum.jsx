@@ -162,7 +162,7 @@ const DiscussionForum = () => {
     // Handle discussion deletion
     const handleDeletePost = async discussionId => {
         try {
-            await Swal.fire({
+            const result = await Swal.fire({
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",
                 icon: 'warning',
@@ -170,20 +170,27 @@ const DiscussionForum = () => {
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Yes, delete it!',
-            }).then(async result => {
-                if (result.isConfirmed) {
-                    await deleteDiscussion(discussionId)
-                    await fetchDiscussions()
-                    Swal.fire(
-                        'Deleted!',
-                        'Discussion has been deleted.',
-                        'success'
-                    )
-                }
             })
+
+            if (result.isConfirmed) {
+                await deleteDiscussion(discussionId)
+
+                // Update local state
+                setDiscussions(prevDiscussions =>
+                    prevDiscussions.filter(
+                        discussion => discussion.id !== discussionId
+                    )
+                )
+
+                Swal.fire('Deleted!', 'Discussion has been deleted.', 'success')
+            }
         } catch (error) {
-            Swal.fire('Error', 'Failed to delete discussion', 'error')
             console.error('Error deleting discussion:', error)
+            Swal.fire(
+                'Error',
+                'Failed to delete discussion. ' + error.message,
+                'error'
+            )
         }
     }
 
@@ -242,7 +249,7 @@ const DiscussionForum = () => {
             if (result.isConfirmed) {
                 await deleteComment(commentId)
 
-                // Update local state to remove the comment
+                // Update local state
                 setDiscussionComments(prevComments => ({
                     ...prevComments,
                     [discussionId]: prevComments[discussionId].filter(
@@ -250,7 +257,7 @@ const DiscussionForum = () => {
                     ),
                 }))
 
-                // Update the comment count in discussions
+                // Update comment count
                 setDiscussions(prevDiscussions =>
                     prevDiscussions.map(discussion =>
                         discussion.id === discussionId
@@ -265,8 +272,12 @@ const DiscussionForum = () => {
                 Swal.fire('Deleted!', 'Comment has been deleted.', 'success')
             }
         } catch (error) {
-            Swal.fire('Error', 'Failed to delete comment', 'error')
             console.error('Error deleting comment:', error)
+            Swal.fire(
+                'Error',
+                'Failed to delete comment. ' + error.message,
+                'error'
+            )
         }
     }
 

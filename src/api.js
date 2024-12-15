@@ -336,6 +336,19 @@ export const submitAssignment = async (courseSlug, assignmentId, formData) => {
     }
 }
 
+export const fetchSubmissions = async (courseSlug, assignmentId) => {
+    try {
+        const response = await axios.get(
+            `${API_URL}/api/courses/${courseSlug}/assignments/${assignmentId}/submissions`,
+            withAuth()
+        )
+        return response.data
+    } catch (error) {
+        console.error('Error fetching submissions:', error)
+        throw error
+    }
+}
+
 export const getAssignmentDetails = async (courseSlug, assignmentId) => {
     const response = await axios.get(
         `${API_URL}/api/courses/${courseSlug}/assignments/${assignmentId}`,
