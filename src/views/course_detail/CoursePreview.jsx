@@ -222,7 +222,7 @@ const CoursePreview = () => {
                             />
                         </svg>
                         <span className="text-sm">
-                            {course.students_count} Students
+                            {course.students_count || 0} Students
                         </span>
                     </div>
                     {/* Teacher */}

@@ -179,14 +179,14 @@ const CourseSideBar = ({ courseSlug, onItemSelect }) => {
                                                     <span className="truncate">
                                                         {item.title}
                                                     </span>
-                                                    {section.type ===
+                                                    {/* {section.type ===
                                                         'lesson' &&
                                                         item.duration && (
-                                                            <span className="ml-auto text-xs text-gray-500">
+                                                            <span className="ml-auto text-xs text-gray-500">{' '}
                                                                 {item.duration}{' '}
                                                                 min
                                                             </span>
-                                                        )}
+                                                        )} */}
                                                 </button>
                                             ))}
                                         </div>
