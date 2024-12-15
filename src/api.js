@@ -17,6 +17,24 @@ const withAuth = (config = {}) => {
     return config
 }
 
+// Login dengan Google
+export const loginWithGoogle = async googleAccessToken => {
+    try {
+        const response = await axios.post(`${API_URL}/api/google-login`, {
+            token: googleAccessToken,
+        })
+        const { token, user } = response.data
+        if (token) {
+            localStorage.setItem('accessToken', token)
+            localStorage.setItem('user', JSON.stringify(user))
+        }
+        return response.data
+    } catch (error) {
+        console.error('Error during Google login:', error.response || error)
+        throw error
+    }
+}
+
 // User API Functions
 export const loginUser = async (email, password) => {
     const response = await axios.post(`${API_URL}/api/login`, {
