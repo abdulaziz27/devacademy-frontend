@@ -6,14 +6,14 @@ import AOS from 'aos'
 import 'aos/dist/aos.css'
 
 const RulesRequirementsPage = () => {
-    // useEffect(() => {
-    //     AOS.init({
-    //         duration: 1000,
-    //         easing: 'ease-in-out',
-    //         once: true,
-    //     })
-    //     window.scrollTo(0, 0)
-    // }, [])
+    useEffect(() => {
+        AOS.init({
+            duration: 1000,
+            easing: 'ease-in-out',
+            once: true,
+        })
+        window.scrollTo(0, 0)
+    }, [])
 
     return (
         <div className="antialiased min-h-screen bg-white">
@@ -43,7 +43,10 @@ const RulesRequirementsPage = () => {
                 </div>
             </section>
 
-            <section className="max-w-[1200px] flex flex-col items-center gap-10 mx-auto p-16 lg:py-10">
+            <section
+                className="max-w-[1200px] flex flex-col items-center gap-10 mx-auto p-16 lg:py-10"
+                data-aos="fade-up"
+                data-aos-delay="200">
                 <div className="flex flex-col gap-2 text-jutify">
                     <h1 className="text-xl font-bold text-slate-800">
                         Respectful and Professional Conduct

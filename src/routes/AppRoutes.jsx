@@ -22,6 +22,7 @@ import TermsPage from '../views/terms_privacy/TermsPage'
 import PrivacyPage from '../views/terms_privacy/PrivacyPage'
 import HelpCenterPage from '../views/information_page/HelpCenterPage'
 import RulesRequirementsPage from '../views/information_page/RulesRequirementsPage'
+import BecomeTeacherPage from '../views/information_page/BecomeTeacherPage'
 
 function AppRoutes() {
     return (
@@ -96,7 +97,7 @@ function AppRoutes() {
             <Route path="/blog" element={<ErrorPage />} />
             <Route path="/program" element={<ErrorPage />} />
             <Route path="/faq" element={<FAQPage />} />
-            <Route path="/become-teacher" element={<ErrorPage />} />
+            <Route path="/become-teacher" element={<BecomeTeacherPage />} />
             <Route
                 path="/rules-requirements"
                 element={<RulesRequirementsPage />}
