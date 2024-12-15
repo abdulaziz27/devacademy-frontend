@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
@@ -6,9 +5,9 @@ import {
     getSubscriptionPlans,
     subscribeToPlan,
     handleSubscriptionCallback,
-    getSignatureKey,
 } from '../../api'
 import { ClipLoader } from 'react-spinners'
+import swal from 'sweetalert'
 
 const SubscriptionPage = () => {
     const [plans, setPlans] = useState([])
@@ -29,38 +28,87 @@ const SubscriptionPage = () => {
             }
         }
 
+        const script = document.createElement('script')
+        script.src = 'https://app.sandbox.midtrans.com/snap/snap.js'
+        script.type = 'text/javascript'
+        script.setAttribute('data-client-key', 'SB-Mid-client-yTb4hQknvTM4U0qb')
+        document.head.appendChild(script)
+
         fetchPlans()
+
+        return () => {
+            if (document.head.contains(script)) {
+                document.head.removeChild(script)
+            }
+        }
     }, [])
 
     const handleSubscribe = async planId => {
         try {
             const response = await subscribeToPlan(planId, 'bank_transfer')
-            alert(`Payment initiated. Snap Token: ${response.snap_token}`)
+            const { snap_token } = response
 
-            // Get signature key for the transaction
-            const signatureResponse = await getSignatureKey(
-                response.transaction.order_id,
-                '200',
-                response.transaction.amount
-            )
+            if (!window.snap) {
+                swal(
+                    'Error',
+                    'Payment system is not ready. Please try again.',
+                    'error'
+                )
+                return
+            }
 
-            // Handle subscription callback
+            window.snap.pay(snap_token, {
+                onSuccess: async function (result) {
+                    await processTestPayment(response.transaction)
+                },
+                onPending: async function (result) {
+                    // For testing, treat pending as success too
+                    await processTestPayment(response.transaction)
+                },
+                onError: function (result) {
+                    console.error('Payment error:', result)
+                    swal(
+                        'Payment Error',
+                        'Something went wrong with the payment',
+                        'error'
+                    )
+                },
+                onClose: async function () {
+                    // Auto settle on close in test mode
+                    await processTestPayment(response.transaction)
+                },
+            })
+        } catch (err) {
+            console.error('Subscription error:', err)
+            const errorMessage =
+                err.response?.data?.message ||
+                'Failed to initiate subscription. Please try again later.'
+            swal('Error', errorMessage, 'error')
+        }
+    }
+
+    const processTestPayment = async transaction => {
+        try {
             const callbackData = {
                 transaction_status: 'settlement',
-                order_id: response.transaction.order_id,
+                order_id: transaction.order_id,
                 status_code: '200',
-                gross_amount: response.transaction.amount,
-                signature_key: signatureResponse.signature_key,
+                gross_amount: transaction.amount,
                 payment_type: 'bank_transfer',
-                transaction_id: response.transaction.id,
+                transaction_id: transaction.id,
                 transaction_time: new Date().toISOString(),
             }
-            const callbackResponse = await handleSubscriptionCallback(
-                callbackData
+
+            await handleSubscriptionCallback(callbackData)
+
+            swal('Success', 'Payment completed successfully!', 'success').then(
+                () => {
+                    window.location.href = '/dashboard'
+                }
             )
-            alert(callbackResponse.message)
-        } catch (err) {
-            alert('Failed to subscribe to the plan. Please try again later.')
+        } catch (error) {
+            console.error('Error processing test payment:', error)
+            swal('Error', 'Failed to process payment confirmation', 'error')
         }
     }
 
@@ -70,12 +118,12 @@ const SubscriptionPage = () => {
                 <ClipLoader size={50} color="#4fa94d" loading={loading} />
             </div>
         )
-    if (error) return <div>Error: {error.message}</div>
+
+    if (error) return <div>Error: {error}</div>
 
     return (
         <div className="bg-white select-none">
             <Navbar />
-
             <div className="max-w-[1200px] mx-auto p-4 py-6 lg:py-8 mt-12 mb-20">
                 <div className="w-full flex flex-col justify-center items-center text-black">
                     <h1 className="text-4xl font-semibold text-center w-full md:w-2/4">
@@ -122,7 +170,6 @@ const SubscriptionPage = () => {
                     </div>
                 </div>
             </div>
-
             <Footer />
         </div>
     )

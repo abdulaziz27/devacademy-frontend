@@ -1,81 +1,39 @@
-import React, { createContext, useContext, useState, useEffect } from 'react'
-import { getUserProfile } from '../api'
-import Swal from 'sweetalert2'
-import { ClipLoader } from 'react-spinners'
+import React, { createContext, useState, useContext, useEffect } from 'react'
+import axios from 'axios'
 
 const AuthContext = createContext(null)
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null)
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState(null)
 
     useEffect(() => {
-        checkAuth()
+        const token = localStorage.getItem('accessToken')
+        const storedUser = localStorage.getItem('user')
+        if (token && storedUser) {
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+            setUser(JSON.parse(storedUser))
+        }
     }, [])
 
-    const checkAuth = async () => {
-        try {
-            const token = localStorage.getItem('accessToken')
-            if (token) {
-                const response = await getUserProfile()
-                setUser(response.data)
-            }
-        } catch (error) {
-            console.error('Auth check failed:', error)
-            setError(error)
-            localStorage.removeItem('accessToken')
-            setUser(null)
-        } finally {
-            setLoading(false)
-        }
+    const login = (userData, token) => {
+        setUser(userData)
+        localStorage.setItem('accessToken', token)
+        localStorage.setItem('user', JSON.stringify(userData))
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
     }
 
-    const login = async (userData, token) => {
-        try {
-            localStorage.setItem('accessToken', token)
-            setUser(userData)
-            await checkAuth()
-        } catch (error) {
-            Swal.fire('Error', 'Failed to login. Please try again.', 'error')
-            throw error
-        }
+    const logout = () => {
+        setUser(null)
+        localStorage.removeItem('accessToken')
+        localStorage.removeItem('user')
+        delete axios.defaults.headers.common['Authorization']
     }
 
-    const logout = async () => {
-        try {
-            localStorage.removeItem('accessToken')
-            setUser(null)
-            Swal.fire('Success', 'Logged out successfully', 'success')
-        } catch (error) {
-            console.error('Logout failed:', error)
-            Swal.fire('Error', 'Failed to logout. Please try again.', 'error')
-        }
-    }
-
-    const value = {
-        user,
-        loading,
-        error,
-        login,
-        logout,
-        checkAuth,
-    }
-
-    if (loading) return (
-        <div className="flex justify-center items-center min-h-screen">
-            <ClipLoader size={50} color="#4fa94d" loading={loading} />
-        </div>
+    return (
+        <AuthContext.Provider value={{ user, login, logout }}>
+            {children}
+        </AuthContext.Provider>
     )
-    if (error) return <div>Error: {error.message}</div>
-
-    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
-export const useAuth = () => {
-    const context = useContext(AuthContext)
-    if (!context) {
-        throw new Error('useAuth must be used within an AuthProvider')
-    }
-    return context
-}
+export const useAuth = () => useContext(AuthContext)
